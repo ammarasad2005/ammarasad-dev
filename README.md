@@ -20,9 +20,9 @@ An immersive developer portfolio for **Muhammad Ammar Asad** that boots into a p
 
 ## Technology
 
+- Next.js 15 App Router
 - React 19
 - TypeScript
-- Vite
 - Tailwind CSS 4
 - Framer Motion
 - Lucide React
@@ -49,6 +49,10 @@ npm run lint
 ## Project structure
 
 ```text
+app/
+├── layout.tsx
+├── page.tsx
+└── client-portfolio.tsx
 src/
 ├── components/
 │   ├── BootSequence.tsx

@@ -1,10 +1,12 @@
 import { motion, useDragControls } from 'framer-motion'
+import NextImage from 'next/image'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { ArrowLeft, ArrowUpRight, AtSign, Braces, Check, ChevronRight, CircleUserRound, Code2, Copy, Database, Download, ExternalLink, FileCode2, FileText, Folder, FolderGit2, Github, GraduationCap, HardDrive, Home, Linkedin, Mail, MapPin, Maximize2, Minus, Search, Send, Server, TerminalSquare, X } from 'lucide-react'
 import { nativeAppMeta, type NativeAppId } from '../data/nativeApps'
 import { projects } from '../data/portfolio'
 import type { DesktopPlatform } from '../types'
+import { AccountAvatar } from './AccountAvatar'
 
 type NativeDesktopAppsProps = {
   openApps: NativeAppId[]
@@ -153,11 +155,11 @@ function NativeResume() {
   const [zoom, setZoom] = useState(100)
   return <div className="native-resume">
     <div className="native-resume-toolbar"><div><button onClick={() => setZoom((value) => Math.max(60, value - 10))} aria-label="Zoom out">−</button><span>{zoom}%</span><button onClick={() => setZoom((value) => Math.min(160, value + 10))} aria-label="Zoom in">+</button></div><span>1 / 1</span><div><a href="https://files.catbox.moe/u9kv8a.pdf" target="_blank" rel="noreferrer"><ExternalLink /> Open original</a><a href="/downloads/Muhammad-Ammar-Asad-Resume.pdf" download="Muhammad-Ammar-Asad-Resume.pdf"><Download /> Download</a></div></div>
-    <div className="native-resume-canvas"><img style={{ width: `${zoom}%`, maxWidth: 'none' }} src="/resume-preview.png" alt="Muhammad Ammar Asad résumé" /></div>
+    <div className="native-resume-canvas"><NextImage style={{ width: `${zoom}%`, maxWidth: 'none', height: 'auto' }} width={1489} height={2105} sizes="(max-width: 1000px) 90vw, 720px" src="/resume-preview.png" alt="Muhammad Ammar Asad résumé" /></div>
   </div>
 }
 
-function NativeSkills() {
+function NativeSkills({ platform }: { platform: DesktopPlatform }) {
   const categories = {
     Frontend: { icon: Code2, summary: 'Interfaces that are fast, responsive, and maintainable.', tools: ['TypeScript', 'React 19', 'Next.js App Router', 'Tailwind CSS', 'Framer Motion'] },
     Backend: { icon: Server, summary: 'APIs, authentication, and serverless systems built for real use.', tools: ['Node.js', 'Express', 'REST APIs', 'NextAuth', 'OAuth 2.0', 'Vercel Serverless'] },
@@ -167,17 +169,17 @@ function NativeSkills() {
   const [activeCategory, setActiveCategory] = useState<keyof typeof categories>('Frontend')
   const active = categories[activeCategory]
   const ActiveIcon = active.icon
-  return <div className="native-skills-app"><aside><div><span>MA</span><strong>Capability Center</strong><small>Installed skills</small></div>{(Object.keys(categories) as (keyof typeof categories)[]).map((category) => { const Icon = categories[category].icon; return <button className={activeCategory === category ? 'active' : ''} key={category} onClick={() => setActiveCategory(category)}><Icon />{category}<span>✓</span></button> })}<footer><i />Available for internships</footer></aside><main><header><div><span>SKILL MATRIX / {activeCategory.toUpperCase()}</span><h2>{activeCategory} engineering</h2><p>{active.summary}</p></div><ActiveIcon /></header><section className="native-skill-tools">{active.tools.map((tool, index) => <div key={tool}><span>{String(index + 1).padStart(2, '0')}</span><strong>{tool}</strong><small>Ready to build</small><Check /></div>)}</section><section className="native-skill-proof"><div><strong>04</strong><span>deployed projects</span></div><div><strong>12+</strong><span>campus utilities</span></div><div><strong>06</strong><span>current semester</span></div><p>Skills are represented by shipped work—not decorative progress bars.</p></section></main></div>
+  return <div className="native-skills-app"><aside><div><AccountAvatar platform={platform} className="skills-account-avatar" size={64} /><strong>Capability Center</strong><small>Installed skills</small></div>{(Object.keys(categories) as (keyof typeof categories)[]).map((category) => { const Icon = categories[category].icon; return <button className={activeCategory === category ? 'active' : ''} key={category} onClick={() => setActiveCategory(category)}><Icon />{category}<span>✓</span></button> })}<footer><i />Available for internships</footer></aside><main><header><div><span>SKILL MATRIX / {activeCategory.toUpperCase()}</span><h2>{activeCategory} engineering</h2><p>{active.summary}</p></div><ActiveIcon /></header><section className="native-skill-tools">{active.tools.map((tool, index) => <div key={tool}><span>{String(index + 1).padStart(2, '0')}</span><strong>{tool}</strong><small>Ready to build</small><Check /></div>)}</section><section className="native-skill-proof"><div><strong>04</strong><span>deployed projects</span></div><div><strong>12+</strong><span>campus utilities</span></div><div><strong>06</strong><span>current semester</span></div><p>Skills are represented by shipped work—not decorative progress bars.</p></section></main></div>
 }
 
-function NativeContact() {
+function NativeContact({ platform }: { platform: DesktopPlatform }) {
   const [subject, setSubject] = useState('Full-stack internship opportunity')
   const [message, setMessage] = useState('Hi Ammar, I came across your portfolio and would like to connect about...')
   const [copied, setCopied] = useState(false)
   const email = 'ammarasad321993@gmail.com'
   function sendEmail(event: FormEvent) { event.preventDefault(); window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}` }
   async function copyAddress() { await navigator.clipboard?.writeText(email); setCopied(true); window.setTimeout(() => setCopied(false), 1400) }
-  return <div className="native-contact-app"><aside><div className="contact-account"><span>MA</span><div><strong>Muhammad Ammar</strong><small>Available for opportunities</small></div></div><div className="compose-label"><Send /> New message</div><button onClick={copyAddress}><Copy /> {copied ? 'Address copied' : 'Copy email'}</button><i /><strong>PROFILES</strong><a href="https://github.com/ammarasad2005" target="_blank" rel="noreferrer"><Github /> GitHub</a><a href="https://www.linkedin.com/in/muhammad-ammar-asad/" target="_blank" rel="noreferrer"><Linkedin /> LinkedIn</a></aside><main><header><AtSign /><div><strong>Start a conversation</strong><small>Opens in your preferred mail application</small></div></header><form onSubmit={sendEmail}><label>To<input value={`${email} — Muhammad Ammar Asad`} readOnly /></label><label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label><textarea value={message} onChange={(event) => setMessage(event.target.value)} aria-label="Email message" /><footer><button type="submit"><Send /> Send with email app</button><span>Islamabad, Pakistan · open to on-site and remote roles</span></footer></form></main></div>
+  return <div className="native-contact-app"><aside><div className="contact-account"><AccountAvatar platform={platform} className="contact-account-avatar" size={66} /><div><strong>Muhammad Ammar</strong><small>Available for opportunities</small></div></div><div className="compose-label"><Send /> New message</div><button onClick={copyAddress}><Copy /> {copied ? 'Address copied' : 'Copy email'}</button><i /><strong>PROFILES</strong><a href="https://github.com/ammarasad2005" target="_blank" rel="noreferrer"><Github /> GitHub</a><a href="https://www.linkedin.com/in/muhammad-ammar-asad/" target="_blank" rel="noreferrer"><Linkedin /> LinkedIn</a></aside><main><header><AtSign /><div><strong>Start a conversation</strong><small>Opens in your preferred mail application</small></div></header><form onSubmit={sendEmail}><label>To<input value={`${email} — Muhammad Ammar Asad`} readOnly /></label><label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label><textarea value={message} onChange={(event) => setMessage(event.target.value)} aria-label="Email message" /><footer><button type="submit"><Send /> Send with email app</button><span>Islamabad, Pakistan · open to on-site and remote roles</span></footer></form></main></div>
 }
 
 function AboutAmmar({ platform }: { platform: DesktopPlatform }) {
@@ -195,8 +197,8 @@ function AboutAmmar({ platform }: { platform: DesktopPlatform }) {
   }
   async function copyEmail() { await navigator.clipboard?.writeText('ammarasad321993@gmail.com'); setCopied(true); window.setTimeout(() => setCopied(false), 1500) }
   return <div className="native-about">
-    <aside><button onClick={() => setSection('System')} aria-label="Return to system overview">‹</button><div className="about-mini-user"><span>MA</span><div><strong>Muhammad Ammar</strong><small>Local account</small></div></div><label><Search /><input value={settingsQuery} onChange={(event) => setSettingsQuery(event.target.value)} placeholder="Find a setting" /></label>{visibleSections.map((item, index) => <button onClick={() => setSection(item)} className={section === item ? 'selected' : ''} key={item}>{index === 0 && item === 'System' ? <Code2 /> : <span>•</span>}{item}</button>)}</aside>
-    <main><div className="about-crumb">Ammar <ChevronRight /> {section}</div><section className="about-hero"><div className="about-avatar">MA<i /></div><div><h2>Muhammad Ammar Asad</h2><p>Full-Stack Web Developer</p><span><MapPin /> Islamabad, Pakistan</span></div><button onClick={copyEmail}>{copied ? <Check /> : <Copy />}{copied ? 'Copied' : 'Copy email'}</button></section>
+    <aside><button onClick={() => setSection('System')} aria-label="Return to system overview">‹</button><div className="about-mini-user"><AccountAvatar platform={platform} className="about-mini-avatar" size={64} /><div><strong>Muhammad Ammar</strong><small>Local account</small></div></div><label><Search /><input value={settingsQuery} onChange={(event) => setSettingsQuery(event.target.value)} placeholder="Find a setting" /></label>{visibleSections.map((item, index) => <button onClick={() => setSection(item)} className={section === item ? 'selected' : ''} key={item}>{index === 0 && item === 'System' ? <Code2 /> : <span>•</span>}{item}</button>)}</aside>
+    <main><div className="about-crumb">Ammar <ChevronRight /> {section}</div><section className="about-hero"><AccountAvatar platform={platform} className="about-avatar" size={118} /><div><h2>Muhammad Ammar Asad</h2><p>Full-Stack Web Developer</p><span><MapPin /> Islamabad, Pakistan</span></div><button onClick={copyEmail}>{copied ? <Check /> : <Copy />}{copied ? 'Copied' : 'Copy email'}</button></section>
       {section === 'System' ? <section className="about-specs"><h3>Builder specifications</h3><div><span><GraduationCap /> Education</span><strong>B.S. Computer Science · FAST-NUCES</strong></div><div><span><Code2 /> Current focus</span><strong>Next.js · Node.js · TypeScript · Product engineering</strong></div><div><span><FolderGit2 /> Shipped</span><strong>4 deployed projects · 12+ campus utilities</strong></div><div><span><CircleUserRound /> Availability</span><strong className="available">Open to full-stack internships</strong></div></section> : <section className="native-settings-detail"><span>PERSONAL SETTINGS</span><h3>{details[section].title}</h3><p>{details[section].description}</p><div>{details[section].items.map((item) => <span key={item}><Check />{item}</span>)}</div></section>}
       <section className="about-links"><a href="mailto:ammarasad321993@gmail.com"><Mail /> Email <ArrowUpRight /></a><a href="https://github.com/ammarasad2005" target="_blank" rel="noreferrer"><Github /> GitHub <ArrowUpRight /></a><a href="https://www.linkedin.com/in/muhammad-ammar-asad/" target="_blank" rel="noreferrer"><Linkedin /> LinkedIn <ArrowUpRight /></a></section>
       <footer>{platform === 'macos' ? 'macOS-tailored interface · AmmarOS Darwin build 26.1' : 'Windows-tailored interface · AmmarOS build 26.1'} · crafted with React & TypeScript</footer>
@@ -214,8 +216,8 @@ export function NativeDesktopApps({ openApps, minimizedApps, activeApp, reducedM
       {app === 'terminal' && <NativeTerminal onOpenApp={onOpenApp} onOpenIDE={onOpenIDE} platform={platform} />}
       {app === 'resume' && <NativeResume />}
       {app === 'about' && <AboutAmmar platform={platform} />}
-      {app === 'skills' && <NativeSkills />}
-      {app === 'contact' && <NativeContact />}
+      {app === 'skills' && <NativeSkills platform={platform} />}
+      {app === 'contact' && <NativeContact platform={platform} />}
     </NativeWindow>
   })}</>
 }
