@@ -30,3 +30,4 @@ out
 *.sw?
 .vite-source-tags.js
 .vercel
+uploads/
