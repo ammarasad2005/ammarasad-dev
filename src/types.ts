@@ -7,6 +7,8 @@ export type PortfolioFile = {
   accent: string
 }
 
-export type BootChoice = 'portfolio' | 'safe' | 'easter'
+export type DesktopPlatform = 'windows' | 'macos'
+
+export type BootChoice = DesktopPlatform | 'safe' | 'easter'
 
 export type AppPhase = 'boot' | 'loading' | 'desktop' | 'ide' | 'safe' | 'easter'

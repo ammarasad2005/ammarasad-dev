@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { BootChoice } from '../types'
+import type { BootChoice, DesktopPlatform } from '../types'
 
 const options: { id: BootChoice; label: string; detail: string }[] = [
-  { id: 'portfolio', label: 'Boot AmmarOS', detail: 'Full interactive portfolio' },
+  { id: 'windows', label: 'AmmarOS — Windows Experience', detail: 'Desktop, taskbar, Explorer & native windows' },
+  { id: 'macos', label: 'AmmarOS — macOS Experience', detail: 'Menu bar, Dock, Finder & native macOS chrome' },
   { id: 'safe', label: 'AmmarOS (safe graphics)', detail: 'Fast, static content mode' },
   { id: 'easter', label: 'Run memory diagnostics', detail: 'Definitely a serious utility' },
 ]
@@ -88,12 +89,12 @@ export function BootSequence({ onChoose, reducedMotion }: BootSequenceProps) {
   )
 }
 
-export function LoadingScreen({ reducedMotion }: { reducedMotion: boolean }) {
+export function LoadingScreen({ reducedMotion, platform }: { reducedMotion: boolean; platform: DesktopPlatform }) {
   return (
-    <div className="loading-screen" role="status" aria-live="polite">
+    <div className={`loading-screen loading-${platform}`} role="status" aria-live="polite">
       <div className="os-mark" aria-hidden="true"><i /><i /><i /><i /></div>
       <div className={reducedMotion ? 'loading-dots still' : 'loading-dots'} aria-label="Starting AmmarOS"><i /><i /><i /><i /><i /></div>
-      <p>starting workspace</p>
+      <p>{platform === 'macos' ? 'starting macOS workspace' : 'starting Windows workspace'}</p>
       <button className="skip-link visible-skip" onClick={() => window.dispatchEvent(new Event('alexos:skip'))}>Skip intro</button>
     </div>
   )

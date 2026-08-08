@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
+import type { DesktopPlatform } from '../types'
 
 type Shortcut = {
   id: string
@@ -14,16 +15,17 @@ type Selection = { start: Point; current: Point }
 type DesktopShortcutsProps = {
   shortcuts: readonly Shortcut[]
   onLaunch: (id: string) => void
+  platform: DesktopPlatform
 }
 
 const ICON_WIDTH = 82
 const ICON_HEIGHT = 68
 
-export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps) {
-  const defaultPositions = useMemo(() => Object.fromEntries(shortcuts.map((shortcut, index) => [shortcut.id, { x: 17 + Math.floor(index / 5) * 92, y: 25 + (index % 5) * 75 }])), [shortcuts])
+export function DesktopShortcuts({ shortcuts, onLaunch, platform }: DesktopShortcutsProps) {
+  const defaultPositions = useMemo(() => Object.fromEntries(shortcuts.map((shortcut, index) => [shortcut.id, platform === 'macos' ? { x: Math.max(17, window.innerWidth - 103 - Math.floor(index / 5) * 92), y: 48 + (index % 5) * 75 } : { x: 17 + Math.floor(index / 5) * 92, y: 25 + (index % 5) * 75 }])), [platform, shortcuts])
   const [positions, setPositions] = useState<Record<string, Point>>(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('ammaros:desktop-icons') ?? '{}') as Record<string, Point>
+      const saved = JSON.parse(localStorage.getItem(`ammaros:${platform}:desktop-icons`) ?? '{}') as Record<string, Point>
       return { ...defaultPositions, ...saved }
     } catch { return defaultPositions }
   })
@@ -31,8 +33,8 @@ export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps)
   const [selection, setSelection] = useState<Selection | null>(null)
 
   useEffect(() => {
-    localStorage.setItem('ammaros:desktop-icons', JSON.stringify(positions))
-  }, [positions])
+    localStorage.setItem(`ammaros:${platform}:desktop-icons`, JSON.stringify(positions))
+  }, [platform, positions])
 
   useEffect(() => {
     function resetLayout() {
@@ -79,7 +81,7 @@ export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps)
     })
   }
 
-  return <div className="desktop-canvas" aria-label="Desktop shortcuts" onPointerDown={(event) => {
+  return <div className={`desktop-canvas desktop-canvas-${platform}`} aria-label="Desktop shortcuts" onPointerDown={(event) => {
     if (event.button !== 0 || event.target !== event.currentTarget) return
     if (!event.ctrlKey && !event.metaKey) setSelected([])
     setSelection({ start: { x: event.clientX, y: event.clientY }, current: { x: event.clientX, y: event.clientY } })

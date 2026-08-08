@@ -3,6 +3,7 @@ import { useEffect, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { ArrowUpRight, BatteryCharging, Braces, BrainCircuit, CalendarDays, CircleUserRound, Code2, FileText, FolderGit2, Github, Linkedin, Mail, Menu, RefreshCw, Search, ShieldCheck, Sparkles, TerminalSquare, Volume1, Volume2, VolumeX, Wifi, X, Zap } from 'lucide-react'
 import { nativeAppMeta, type NativeAppId } from '../data/nativeApps'
 import { projects } from '../data/portfolio'
+import type { DesktopPlatform } from '../types'
 import { DesktopShortcuts } from './DesktopShortcuts'
 import { IDEWorkbench } from './IDEWorkbench'
 import { NativeDesktopApps } from './NativeDesktopApps'
@@ -24,9 +25,10 @@ type DesktopShellProps = {
   onMinimize: () => void
   onRestart: () => void
   reducedMotion: boolean
+  platform: DesktopPlatform
 }
 
-export function DesktopShell({ ideOpen, initialFile, onOpen, onMinimize, onRestart, reducedMotion }: DesktopShellProps) {
+export function DesktopShell({ ideOpen, initialFile, onOpen, onMinimize, onRestart, reducedMotion, platform }: DesktopShellProps) {
   const [now, setNow] = useState(new Date())
   const [startOpen, setStartOpen] = useState(false)
   const [startQuery, setStartQuery] = useState('')
@@ -137,12 +139,13 @@ export function DesktopShell({ ideOpen, initialFile, onOpen, onMinimize, onResta
 
   function handleContextMenu(event: ReactMouseEvent<HTMLDivElement>) {
     const target = event.target as HTMLElement
-    if (target.closest('.ide-window-wrap, .native-window, .taskbar, .start-menu, .social-preview')) return
+    if (target.closest('.ide-window-wrap, .native-window, .taskbar, .start-menu, .social-preview, .mac-menu-bar, .mac-dock')) return
     event.preventDefault()
     setContextMenu({ x: Math.min(event.clientX, window.innerWidth - 190), y: Math.min(event.clientY, window.innerHeight - 235) })
   }
 
-  const visibleIcons = icons.filter((item) => item.label.toLowerCase().includes(startQuery.toLowerCase()))
+  const desktopIcons = icons.map((item) => platform === 'macos' && item.id === 'projects' ? { ...item, label: 'Finder' } : item)
+  const visibleIcons = desktopIcons.filter((item) => item.label.toLowerCase().includes(startQuery.toLowerCase()))
   const visibleProjectResults = projects.filter((project) => `${project.title} ${project.tags.join(' ')}`.toLowerCase().includes(startQuery.toLowerCase()))
   const greeting = now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening'
   const noiseLabels = { shielded: 'Noise shielded', ambient: 'Ambient allowed', open: 'Open listening' }
@@ -151,32 +154,33 @@ export function DesktopShell({ ideOpen, initialFile, onOpen, onMinimize, onResta
   const firstWeekday = new Date(now.getFullYear(), now.getMonth(), 1).getDay()
   const monthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
   const calendarDays = [...Array(firstWeekday).fill(null), ...Array.from({ length: monthDays }, (_, index) => index + 1)]
+  const activeAppTitle = activeNative ? (platform === 'macos' && activeNative === 'projects' ? 'Finder' : nativeAppMeta[activeNative].label) : ideOpen ? 'Ammar Code' : platform === 'macos' ? 'Finder' : 'AmmarOS'
 
   return (
-    <div className={`desktop-shell ${focusMode ? 'focus-mode' : ''}`} onContextMenu={handleContextMenu} onPointerDown={(event) => { if (!(event.target as HTMLElement).closest('.desktop-context-menu')) setContextMenu(null) }}>
+    <div className={`desktop-shell platform-${platform} ${focusMode ? 'focus-mode' : ''}`} onContextMenu={handleContextMenu} onPointerDown={(event) => { if (!(event.target as HTMLElement).closest('.desktop-context-menu')) setContextMenu(null) }}>
       <img className="desktop-wallpaper" src="/wallpaper.webp" alt="" />
       <div className="wallpaper-vignette" />
-      <div className="desktop-brand"><Code2 /><div><strong>AmmarOS</strong><span>build 26.01 · portfolio edition</span></div></div>
-      <DesktopShortcuts shortcuts={icons} onLaunch={launch} />
-      <button className="desktop-person-widget" onClick={() => { setRequestedProjectId(null); openNative('projects') }}><span className="widget-avatar">MA<i /></span><span><small>CENTRALIZED WORKSPACE</small><strong>Open Explorer</strong><em>Projects · skills · resume · contact</em></span><ChevronStats /></button>
+      <div className="desktop-brand"><Code2 /><div><strong>{platform === 'macos' ? 'AmmarOS Sonoma' : 'AmmarOS'}</strong><span>{platform === 'macos' ? 'Darwin 26.1 · portfolio edition' : 'build 26.01 · portfolio edition'}</span></div></div>
+      <DesktopShortcuts shortcuts={desktopIcons} onLaunch={launch} platform={platform} />
+      <button className="desktop-person-widget" onClick={() => { setRequestedProjectId(null); openNative('projects') }}><span className="widget-avatar">MA<i /></span><span><small>CENTRALIZED WORKSPACE</small><strong>Open {platform === 'macos' ? 'Finder' : 'Explorer'}</strong><em>Projects · skills · resume · contact</em></span><ChevronStats /></button>
       <AnimatePresence>{focusMode && <motion.div className="focus-zone-badge" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}><BrainCircuit /><span><strong>{focusIntent} zone active</strong><small>{focusMinutes} min · external noise shielded</small></span><button onClick={toggleFocusMode}>End session</button></motion.div>}</AnimatePresence>
 
       <AnimatePresence>
         {ideOpen && <motion.div className={`ide-window-wrap ${activeNative ? '' : 'focused'}`} onPointerDown={() => setActiveNative(null)} initial={reducedMotion ? false : { opacity: 0, scale: .96, y: 26 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: .98 }} transition={{ type: 'spring', stiffness: 260, damping: 28 }}>
-          <IDEWorkbench initialFile={initialFile} onRestart={onRestart} onMinimize={onMinimize} reducedMotion={reducedMotion} />
+          <IDEWorkbench initialFile={initialFile} onRestart={onRestart} onMinimize={onMinimize} reducedMotion={reducedMotion} platform={platform} />
         </motion.div>}
       </AnimatePresence>
 
       <AnimatePresence>
-        <NativeDesktopApps openApps={openApps} minimizedApps={minimizedApps} activeApp={activeNative} reducedMotion={reducedMotion} onFocus={setActiveNative} onClose={closeNative} onMinimize={minimizeNative} onOpenApp={openNative} onOpenIDE={openIDE} requestedProjectId={requestedProjectId} />
+        <NativeDesktopApps openApps={openApps} minimizedApps={minimizedApps} activeApp={activeNative} reducedMotion={reducedMotion} onFocus={setActiveNative} onClose={closeNative} onMinimize={minimizeNative} onOpenApp={openNative} onOpenIDE={openIDE} requestedProjectId={requestedProjectId} platform={platform} />
       </AnimatePresence>
 
-      <AnimatePresence>{startOpen && <motion.div className="start-menu" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
+      <AnimatePresence>{startOpen && <motion.div className={`start-menu ${platform === 'macos' ? 'mac-launchpad' : ''}`} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
         <label><Search size={16} /><input placeholder="Search apps, projects, or technologies" autoFocus value={startQuery} onChange={(event) => setStartQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') { if (visibleIcons[0]) launch(visibleIcons[0].id); else if (visibleProjectResults[0]) openProjectNative(visibleProjectResults[0].id) } }} /></label>
         <section className="start-personal"><div><span>{greeting}, Ammar.</span><strong>{focusMode ? `${focusIntent} zone is active` : 'What are we building next?'}</strong><small>{focusMode ? `${focusMinutes} focused minutes · resilience ${resilience}%` : 'Your projects, tools, and professional story are ready.'}</small></div><button className={focusMode ? 'active' : ''} onClick={toggleFocusMode}><BrainCircuit />{focusMode ? 'Leave focus' : 'Enter focus'}</button></section>
-        <span>PINNED</span><div>{visibleIcons.filter((item) => item.id !== 'about').map(({ id, label, icon: Icon }) => <button key={id} onClick={() => { launch(id); setStartOpen(false) }}><Icon /><small>{label}</small></button>)}</div>
+        <span>{platform === 'macos' ? 'APPLICATIONS' : 'PINNED'}</span><div>{visibleIcons.filter((item) => item.id !== 'about').map(({ id, label, icon: Icon }) => <button key={id} onClick={() => { launch(id); setStartOpen(false) }}><Icon /><small>{label}</small></button>)}</div>
         {startQuery && visibleProjectResults.length > 0 && <><span>PROJECT MATCHES</span><section className="start-search-results">{visibleProjectResults.slice(0, 3).map((project) => <button key={project.id} onClick={() => openProjectNative(project.id)}><FolderGit2 /><span><strong>{project.title}</strong><small>{project.tags.slice(0, 2).join(' · ')}</small></span><ArrowUpRight /></button>)}</section></>}
-        <span>RECENT</span><section className="start-recent"><button onClick={() => openProjectNative('signal')}><FileText /><span><strong>FAST Isb Utilities</strong><small>Explorer · native detail</small></span></button><button onClick={() => openNative('skills')}><Braces /><span><strong>Skill Matrix</strong><small>Capabilities · native app</small></span></button></section>
+        <span>{platform === 'macos' ? 'RECENTLY USED' : 'RECENT'}</span><section className="start-recent"><button onClick={() => openProjectNative('signal')}><FileText /><span><strong>FAST Isb Utilities</strong><small>{platform === 'macos' ? 'Finder' : 'Explorer'} · native detail</small></span></button><button onClick={() => openNative('skills')}><Braces /><span><strong>Skill Matrix</strong><small>Capabilities · native app</small></span></button></section>
         <footer><span className="mini-avatar">MA</span><strong>Muhammad Ammar Asad</strong><span className="start-footer-status"><i />{focusMode ? 'Focused' : 'Available'}</span><button onClick={onRestart}>Restart</button></footer>
       </motion.div>}</AnimatePresence>
 
@@ -186,9 +190,9 @@ export function DesktopShell({ ideOpen, initialFile, onOpen, onMinimize, onResta
         <section><strong>Muhammad Ammar Asad</strong><small>{socialPreview === 'github' ? '@ammarasad2005' : 'Full-Stack Developer · CS @ FAST-NUCES'}</small><p>{socialPreview === 'github' ? 'Open-source projects across Next.js, Chrome extensions, campus tooling, and full-stack product builds.' : 'Computer Science student in Islamabad building end-to-end web products with TypeScript, React, Next.js, and Node.js.'}</p><div><span>{socialPreview === 'github' ? '4 featured projects' : 'Islamabad, Pakistan'}</span><a href={socialPreview === 'github' ? 'https://github.com/ammarasad2005' : 'https://www.linkedin.com/in/muhammad-ammar-asad/'} target="_blank" rel="noreferrer">Open profile <ArrowUpRight /></a></div></section>
       </motion.aside>}</AnimatePresence>
 
-      <AnimatePresence>{welcomeVisible && <motion.button className="desktop-notification" onClick={() => { setWelcomeVisible(false); setRequestedProjectId(null); openNative('projects') }} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}><FolderGit2 /><span><strong>Explorer is ready</strong><small>One persistent place for projects, skills, résumé, contact, and profile.</small></span><X onClick={(event) => { event.stopPropagation(); setWelcomeVisible(false) }} /></motion.button>}</AnimatePresence>
+      <AnimatePresence>{welcomeVisible && <motion.button className="desktop-notification" onClick={() => { setWelcomeVisible(false); setRequestedProjectId(null); openNative('projects') }} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}><FolderGit2 /><span><strong>{platform === 'macos' ? 'Finder' : 'Explorer'} is ready</strong><small>One persistent place for projects, skills, résumé, contact, and profile.</small></span><X onClick={(event) => { event.stopPropagation(); setWelcomeVisible(false) }} /></motion.button>}</AnimatePresence>
 
-      <AnimatePresence>{contextMenu && <motion.div className="desktop-context-menu" style={{ left: contextMenu.x, top: contextMenu.y }} initial={{ opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} onPointerDown={(event) => event.stopPropagation()}><button onClick={() => openNative('projects')}><FolderGit2 /> Open Explorer</button><button onClick={() => openNative('skills')}><Braces /> Open Skill Matrix</button><button onClick={() => openNative('terminal')}><TerminalSquare /> Open in Terminal</button><i /><button onClick={() => openNative('about')}><CircleUserRound /> Profile properties</button><button onClick={() => { window.dispatchEvent(new Event('ammaros:reset-icons')); setContextMenu(null) }}><RefreshCw /> Arrange icons</button><button onClick={onRestart}><Code2 /> Restart AmmarOS</button></motion.div>}</AnimatePresence>
+      <AnimatePresence>{contextMenu && <motion.div className={`desktop-context-menu context-${platform}`} style={{ left: contextMenu.x, top: contextMenu.y }} initial={{ opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} onPointerDown={(event) => event.stopPropagation()}><button onClick={() => openNative('projects')}><FolderGit2 /> Open {platform === 'macos' ? 'Finder' : 'Explorer'}</button><button onClick={() => openNative('skills')}><Braces /> Open Skill Matrix</button><button onClick={() => openNative('terminal')}><TerminalSquare /> Open in Terminal</button><i /><button onClick={() => openNative('about')}><CircleUserRound /> {platform === 'macos' ? 'Get Info' : 'Profile properties'}</button><button onClick={() => { window.dispatchEvent(new Event('ammaros:reset-icons')); setContextMenu(null) }}><RefreshCw /> {platform === 'macos' ? 'Clean Up' : 'Arrange icons'}</button><button onClick={onRestart}><Code2 /> Restart AmmarOS</button></motion.div>}</AnimatePresence>
 
       <AnimatePresence>{quickSettingsOpen && <motion.aside className="developer-quick-settings" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
         <header><div><Sparkles /><span><strong>Developer Zone</strong><small>Personal workspace controls</small></span></div><b>{devLanguage} mode</b></header>
@@ -209,11 +213,19 @@ export function DesktopShell({ ideOpen, initialFile, onOpen, onMinimize, onResta
         <section className="focus-plan"><div><CalendarDays /><span><strong>Today’s builder rhythm</strong><small>A suggested cadence for Ammar</small></span></div><ul><li><i />Deep build <span>90 min</span></li><li><i />Learn deliberately <span>45 min</span></li><li><i />Ship one useful thing <span>Today</span></li></ul><button className={focusMode ? 'active' : ''} onClick={toggleFocusMode}>{focusMode ? `End ${focusIntent} session · ${focusMinutes} min` : `Start ${focusIntent} session`}</button></section>
       </motion.aside>}</AnimatePresence>
 
-      <footer className="taskbar">
+      {platform === 'macos' && <>
+        <header className="mac-menu-bar">
+          <nav className="mac-menu-left" aria-label="macOS application menu"><button className="mac-ammar-menu" onClick={() => { setStartOpen((value) => !value); setQuickSettingsOpen(false); setClockOpen(false) }}><Code2 /></button><strong>{activeAppTitle}</strong><button onClick={() => openNative('projects')}>File</button><button onClick={() => setStartOpen(true)}>Edit</button><button onClick={openQuickSettings}>View</button><button onClick={() => openNative('projects')}>Go</button><button onClick={() => activeNative ? setActiveNative(null) : openNative('projects')}>Window</button><button onClick={() => openNative('about')}>Help</button></nav>
+          <nav className="mac-menu-right" aria-label="macOS status menu"><button onClick={() => setDevLanguage((language) => language === 'TS' ? 'JS' : language === 'JS' ? 'PY' : 'TS')}>{devLanguage}</button>{focusMode && <button className="mac-focus-status" onClick={toggleFocusMode}><BrainCircuit />{focusMinutes}m</button>}<button onClick={openQuickSettings}><Wifi /></button><button onClick={() => { cycleNoiseMode(); setQuickSettingsOpen(true) }}><NoiseIcon /></button><button onClick={openQuickSettings}><BatteryCharging /><small>{resilience}%</small></button><button onClick={openClock}>{now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}&nbsp; {now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</button></nav>
+        </header>
+        <footer className="mac-dock" aria-label="AmmarOS Dock"><button className={startOpen ? 'active' : ''} data-label="Launchpad" onClick={() => { setStartOpen((value) => !value); setQuickSettingsOpen(false); setClockOpen(false) }}><Menu /></button><button className={`${openApps.includes('projects') ? 'running' : ''} ${activeNative === 'projects' ? 'active' : ''}`} data-label="Finder" onClick={() => toggleNative('projects')}><FolderGit2 /></button><button className={`${ideOpen ? 'running' : ''} ${ideOpen && !activeNative ? 'active' : ''}`} data-label="Ammar Code" onClick={() => { if (ideOpen && activeNative) setActiveNative(null); else if (ideOpen) onMinimize(); else openIDE(initialFile) }}><Code2 /></button>{(['terminal', 'resume', 'about', 'skills', 'contact'] as NativeAppId[]).map((app) => { const MetaIcon = nativeAppMeta[app].icon; return <button key={app} data-label={platform === 'macos' && app === 'resume' ? 'Preview' : platform === 'macos' && app === 'contact' ? 'Mail' : nativeAppMeta[app].label} className={`${openApps.includes(app) ? 'running' : ''} ${activeNative === app ? 'active' : ''}`} onClick={() => toggleNative(app)}><MetaIcon /></button>})}<i /><button data-label="GitHub" onClick={() => setSocialPreview((value) => value === 'github' ? null : 'github')}><Github /></button><button data-label="LinkedIn" onClick={() => setSocialPreview((value) => value === 'linkedin' ? null : 'linkedin')}><Linkedin /></button></footer>
+      </>}
+
+      {platform === 'windows' && <footer className="taskbar">
         <button className={`taskbar-weather ${startOpen ? 'active' : ''}`} onClick={() => { setStartOpen((value) => !value); setQuickSettingsOpen(false); setClockOpen(false); setSocialPreview(null) }} aria-label="Open AmmarOS Start menu"><span className="pk-start-mark"><Menu /><b>PK</b></span><small>AmmarOS<br />Start menu</small></button>
         <div className="taskbar-center"><button aria-label="Search from Start" onClick={() => { setStartOpen(true); setQuickSettingsOpen(false); setClockOpen(false) }}><Search /></button><button className={`${ideOpen ? 'running' : ''} ${ideOpen && !activeNative ? 'active' : ''}`} onClick={() => { if (ideOpen && activeNative) setActiveNative(null); else if (ideOpen) onMinimize(); else openIDE(initialFile) }} aria-label="Ammar Code"><Code2 /></button>{(['projects', 'terminal', 'resume', 'about', 'skills', 'contact'] as NativeAppId[]).map((app) => { const MetaIcon = nativeAppMeta[app].icon; return <button key={app} className={`${openApps.includes(app) ? 'running' : ''} ${activeNative === app ? 'active' : ''}`} onClick={() => toggleNative(app)} aria-label={`${nativeAppMeta[app].label} app`}><MetaIcon /></button> })}<button className={socialPreview === 'github' ? 'active' : ''} onClick={() => setSocialPreview((value) => value === 'github' ? null : 'github')} aria-label="Preview GitHub profile"><Github /></button><button className={socialPreview === 'linkedin' ? 'active' : ''} onClick={() => setSocialPreview((value) => value === 'linkedin' ? null : 'linkedin')} aria-label="Preview LinkedIn profile"><Linkedin /></button></div>
         <div className="taskbar-tray"><button className="tray-language" onClick={() => setDevLanguage((language) => language === 'TS' ? 'JS' : language === 'JS' ? 'PY' : 'TS')} title="Active developer language">{devLanguage}</button><button onClick={openQuickSettings} title="Builder network connected"><Wifi /></button><button className={noiseMode === 'shielded' ? 'shielded' : ''} onClick={() => { cycleNoiseMode(); setQuickSettingsOpen(true); setClockOpen(false) }} title={noiseLabels[noiseMode]}><NoiseIcon /></button><button className="resilience-tray" onClick={openQuickSettings} title={`Mental resilience ${resilience}%`}><BatteryCharging /><small>{resilience}</small></button><button className="tray-clock" onClick={openClock}><time>{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<small>{now.toLocaleDateString([], { month: 'short', day: 'numeric' })}</small></time></button></div>
-      </footer>
+      </footer>}
     </div>
   )
 }
