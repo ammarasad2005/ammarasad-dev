@@ -4,9 +4,11 @@ An immersive developer portfolio for **Muhammad Ammar Asad** that boots into a p
 
 ## Experience
 
-- GRUB-inspired keyboard-accessible bootloader and skippable loading sequence
-- Windows-inspired desktop with persistent, draggable shortcuts and marquee selection
-- Central **Explorer** that remains open while launching independent applications
+- GRUB-inspired bootloader with keyboard-selectable Windows and macOS experiences
+- Fully tailored Windows desktop with Start menu, taskbar, Explorer, and native window chrome
+- Fully tailored macOS desktop with its own wallpaper, menu bar, Dock, Launchpad, Spotlight, Finder, native context menus, traffic-light controls, and zsh terminal
+- Platform-specific loading states, shortcut layouts, persistent icon positions, and marquee selection
+- Central **Explorer/Finder** that remains open while launching independent applications
 - Native Projects, Skill Matrix, Resume, Contact, Terminal, and Profile windows
 - VS Code-inspired editor with file navigation, tabs, command palette, and integrated terminal
 - Personalized Developer Zone with focus sessions, resilience, noise shielding, and workspace intent

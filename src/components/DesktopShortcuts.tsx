@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import type { LucideIcon } from 'lucide-react'
+import type { DesktopPlatform } from '../types'
 
 type Shortcut = {
   id: string
@@ -14,16 +15,17 @@ type Selection = { start: Point; current: Point }
 type DesktopShortcutsProps = {
   shortcuts: readonly Shortcut[]
   onLaunch: (id: string) => void
+  platform: DesktopPlatform
+  iconSize?: number
 }
 
-const ICON_WIDTH = 82
-const ICON_HEIGHT = 68
-
-export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps) {
-  const defaultPositions = useMemo(() => Object.fromEntries(shortcuts.map((shortcut, index) => [shortcut.id, { x: 17 + Math.floor(index / 5) * 92, y: 25 + (index % 5) * 75 }])), [shortcuts])
+export function DesktopShortcuts({ shortcuts, onLaunch, platform, iconSize = 58 }: DesktopShortcutsProps) {
+  const iconWidth = platform === 'macos' ? 96 : 82
+  const iconHeight = platform === 'macos' ? iconSize + 29 : 68
+  const defaultPositions = useMemo(() => Object.fromEntries(shortcuts.map((shortcut, index) => [shortcut.id, platform === 'macos' ? { x: Math.max(17, window.innerWidth - 103 - Math.floor(index / 5) * 92), y: 48 + (index % 5) * 75 } : { x: 17 + Math.floor(index / 5) * 92, y: 25 + (index % 5) * 75 }])), [platform, shortcuts])
   const [positions, setPositions] = useState<Record<string, Point>>(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('ammaros:desktop-icons') ?? '{}') as Record<string, Point>
+      const saved = JSON.parse(localStorage.getItem(`ammaros:${platform}:desktop-icons`) ?? '{}') as Record<string, Point>
       return { ...defaultPositions, ...saved }
     } catch { return defaultPositions }
   })
@@ -31,8 +33,8 @@ export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps)
   const [selection, setSelection] = useState<Selection | null>(null)
 
   useEffect(() => {
-    localStorage.setItem('ammaros:desktop-icons', JSON.stringify(positions))
-  }, [positions])
+    localStorage.setItem(`ammaros:${platform}:desktop-icons`, JSON.stringify(positions))
+  }, [platform, positions])
 
   useEffect(() => {
     function resetLayout() {
@@ -55,14 +57,14 @@ export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps)
       const bottom = Math.max(selectionStart.y, next.y)
       setSelected(shortcuts.filter((shortcut) => {
         const point = positions[shortcut.id] ?? defaultPositions[shortcut.id]
-        return point.x < right && point.x + ICON_WIDTH > left && point.y < bottom && point.y + ICON_HEIGHT > top
+        return point.x < right && point.x + iconWidth > left && point.y < bottom && point.y + iconHeight > top
       }).map((shortcut) => shortcut.id))
     }
     function up() { setSelection(null) }
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up, { once: true })
     return () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up) }
-  }, [defaultPositions, positions, selection, shortcuts])
+  }, [defaultPositions, iconHeight, iconWidth, positions, selection, shortcuts])
 
   function moveIcons(id: string, offset: Point) {
     const moving = selected.includes(id) ? selected : [id]
@@ -71,7 +73,7 @@ export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps)
       moving.forEach((shortcutId) => {
         const point = current[shortcutId] ?? defaultPositions[shortcutId]
         next[shortcutId] = {
-          x: Math.max(0, Math.min(window.innerWidth - ICON_WIDTH, point.x + offset.x)),
+          x: Math.max(0, Math.min(window.innerWidth - iconWidth, point.x + offset.x)),
           y: Math.max(0, Math.min(window.innerHeight - 118, point.y + offset.y)),
         }
       })
@@ -79,7 +81,7 @@ export function DesktopShortcuts({ shortcuts, onLaunch }: DesktopShortcutsProps)
     })
   }
 
-  return <div className="desktop-canvas" aria-label="Desktop shortcuts" onPointerDown={(event) => {
+  return <div className={`desktop-canvas desktop-canvas-${platform}`} style={{ '--mac-icon-size': `${iconSize}px` } as CSSProperties} aria-label="Desktop shortcuts" onPointerDown={(event) => {
     if (event.button !== 0 || event.target !== event.currentTarget) return
     if (!event.ctrlKey && !event.metaKey) setSelected([])
     setSelection({ start: { x: event.clientX, y: event.clientY }, current: { x: event.clientX, y: event.clientY } })
