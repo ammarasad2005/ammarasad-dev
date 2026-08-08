@@ -6,7 +6,7 @@ An immersive developer portfolio for **Muhammad Ammar Asad** that boots into a p
 
 - GRUB-inspired bootloader with keyboard-selectable Windows and macOS experiences
 - Fully tailored Windows desktop with Start menu, taskbar, Explorer, and native window chrome
-- Fully tailored macOS desktop with menu bar, Dock, Launchpad, Finder, traffic-light controls, and zsh terminal
+- Fully tailored macOS desktop with its own wallpaper, menu bar, Dock, Launchpad, Spotlight, Finder, native context menus, traffic-light controls, and zsh terminal
 - Platform-specific loading states, shortcut layouts, persistent icon positions, and marquee selection
 - Central **Explorer/Finder** that remains open while launching independent applications
 - Native Projects, Skill Matrix, Resume, Contact, Terminal, and Profile windows
