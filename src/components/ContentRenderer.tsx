@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import NextImage from 'next/image'
 import { ArrowUpRight, Check, Copy, Download, ExternalLink, Github, Linkedin, Mail, MapPin, Sparkles } from 'lucide-react'
 import { projects } from '../data/portfolio'
 
@@ -190,7 +191,7 @@ function ResumeContent() {
     <article className="resume-document">
       <header className="pdf-toolbar"><div><span className="eyebrow">RESUME PREVIEW · PNG</span><strong>Muhammad Ammar Asad</strong><small>High-resolution in-editor preview · original available as PDF</small></div><div><button type="button" onClick={openPdf}><ExternalLink size={15} /> Open PDF</button><a className="pdf-download-button" href="/downloads/Muhammad-Ammar-Asad-Resume.pdf" download="Muhammad-Ammar-Asad-Resume.pdf"><Download size={15} /> Download PDF</a></div></header>
       <div className="resume-preview-scroll" tabIndex={0} aria-label="Scroll through Muhammad Ammar Asad's résumé preview">
-        <img className="resume-preview-image" src="/resume-preview.png" alt="Muhammad Ammar Asad résumé showing professional summary, education, technical skills, projects, hackathons, and volunteer experience" />
+        <NextImage className="resume-preview-image" src="/resume-preview.png" width={1489} height={2105} sizes="(max-width: 1000px) 90vw, 820px" alt="Muhammad Ammar Asad résumé showing professional summary, education, technical skills, projects, hackathons, and volunteer experience" />
       </div>
     </article>
   )

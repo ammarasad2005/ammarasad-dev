@@ -1,4 +1,5 @@
 import { motion, useDragControls } from 'framer-motion'
+import NextImage from 'next/image'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { ArrowLeft, ArrowUpRight, AtSign, Braces, Check, ChevronRight, CircleUserRound, Code2, Copy, Database, Download, ExternalLink, FileCode2, FileText, Folder, FolderGit2, Github, GraduationCap, HardDrive, Home, Linkedin, Mail, MapPin, Maximize2, Minus, Search, Send, Server, TerminalSquare, X } from 'lucide-react'
@@ -153,7 +154,7 @@ function NativeResume() {
   const [zoom, setZoom] = useState(100)
   return <div className="native-resume">
     <div className="native-resume-toolbar"><div><button onClick={() => setZoom((value) => Math.max(60, value - 10))} aria-label="Zoom out">−</button><span>{zoom}%</span><button onClick={() => setZoom((value) => Math.min(160, value + 10))} aria-label="Zoom in">+</button></div><span>1 / 1</span><div><a href="https://files.catbox.moe/u9kv8a.pdf" target="_blank" rel="noreferrer"><ExternalLink /> Open original</a><a href="/downloads/Muhammad-Ammar-Asad-Resume.pdf" download="Muhammad-Ammar-Asad-Resume.pdf"><Download /> Download</a></div></div>
-    <div className="native-resume-canvas"><img style={{ width: `${zoom}%`, maxWidth: 'none' }} src="/resume-preview.png" alt="Muhammad Ammar Asad résumé" /></div>
+    <div className="native-resume-canvas"><NextImage style={{ width: `${zoom}%`, maxWidth: 'none', height: 'auto' }} width={1489} height={2105} sizes="(max-width: 1000px) 90vw, 720px" src="/resume-preview.png" alt="Muhammad Ammar Asad résumé" /></div>
   </div>
 }
 

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import NextImage from 'next/image'
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { ArrowUpRight, BatteryCharging, Braces, BrainCircuit, CalendarDays, CircleUserRound, Code2, FileText, FolderGit2, Github, Image, LayoutGrid, Linkedin, Mail, Menu, RefreshCw, Search, ShieldCheck, SlidersHorizontal, Sparkles, TerminalSquare, Volume1, Volume2, VolumeX, Wifi, X, Zap } from 'lucide-react'
 import { nativeAppMeta, type NativeAppId } from '../data/nativeApps'
@@ -201,7 +202,7 @@ export function DesktopShell({ ideOpen, initialFile, onOpen, onMinimize, onResta
 
   return (
     <div className={`desktop-shell platform-${platform} ${platform === 'macos' ? `mac-wallpaper-${macWallpaperTone}` : ''} ${focusMode ? 'focus-mode' : ''}`} onContextMenu={handleContextMenu} onPointerDown={(event) => { if (!(event.target as HTMLElement).closest('.desktop-context-menu, .mac-view-options')) setContextMenu(null) }}>
-      <img className="desktop-wallpaper" src={platform === 'macos' ? '/wallpaper-macos.webp' : '/wallpaper.webp'} alt="" />
+      <NextImage className="desktop-wallpaper" src={platform === 'macos' ? '/wallpaper-macos.webp' : '/wallpaper.webp'} alt="" fill priority sizes="100vw" />
       <div className="wallpaper-vignette" />
       <div className="desktop-brand"><Code2 /><div><strong>{platform === 'macos' ? 'AmmarOS Sonoma' : 'AmmarOS'}</strong><span>{platform === 'macos' ? 'Darwin 26.1 · portfolio edition' : 'build 26.01 · portfolio edition'}</span></div></div>
       <DesktopShortcuts shortcuts={desktopShortcutIcons} onLaunch={launch} platform={platform} iconSize={macIconSize} />
