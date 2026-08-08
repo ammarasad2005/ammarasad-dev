@@ -31,7 +31,7 @@ Most portfolios present a sequence of pages. AmmarOS presents a **place**.
 
 The experience begins before the portfolio is visible. A firmware-inspired preboot frame hands control to a functional GNU GRUB interface. The visitor chooses the operating-system language they prefer, watches that environment sign in, and arrives at a desktop whose applications represent different parts of Muhammad Ammar Asad's professional story.
 
-This is not a static desktop illustration. Windows and macOS have independent shells, interaction patterns, window chrome, navigation models, shortcuts, persistence, and system controls. The IDE remains the deepest portfolio surface, but it is no longer the only destination.
+This is not a static operating-system illustration. Windows, macOS, Android, and iOS have independent shells, interaction patterns, navigation models, applications, wallpapers, and system controls. The same portfolio content is expressed through the conventions of the selected platform.
 
 > **Progressive enhancement is the rule:** the cinematic desktop is optional, every introduction is skippable, reduced motion is respected, and mobile receives a purpose-built portfolio rather than a compressed desktop metaphor.
 
@@ -67,6 +67,31 @@ This is not a static desktop illustration. Windows and macOS have independent sh
 
 ---
 
+## Two native mobile languages
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3 align="center">Android workspace</h3>
+      <img src="./public/screenshots/android-home.webp" alt="Android-tailored AmmarOS mobile home screen" />
+      <p>Material You wallpaper, At a Glance, profile and project widgets, app drawer, notification shade, quick settings, Android navigation controls, and a persistent favorites dock.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3 align="center">iOS workspace</h3>
+      <img src="./public/screenshots/ios-home.webp" alt="iOS-tailored AmmarOS mobile Home Screen" />
+      <p>Dynamic Island, Home Screen widgets, native app grid, Spotlight, Control Center, translucent Dock, Files, Preview, Mail, and a platform-specific terminal.</p>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="./public/screenshots/mobile-bootloader.webp" alt="Ammar Mobile Boot Manager with Android and iOS selections" width="48%" />
+</p>
+
+The mobile entrance mirrors a real unlocked-device boot manager: Volume Up and Volume Down move the highlighted target, while the Power button confirms Android, iOS, or Recovery mode.
+
+---
+
 ## Experience flow
 
 ```mermaid
@@ -82,6 +107,12 @@ flowchart LR
     H --> I
     I --> J[Ammar Code / portfolio IDE]
     E --> K[Responsive static portfolio]
+    L[Mobile preboot] --> M[Ammar Mobile Boot Manager]
+    M --> N[Android loading and lock screen]
+    M --> O[iOS loading and lock screen]
+    M --> K
+    N --> P[Material You home and native apps]
+    O --> Q[iOS Home Screen and native apps]
 ```
 
 ### 1. Firmware and GRUB
@@ -169,7 +200,35 @@ The IDE is the most detailed content layer:
 
 ### Mobile
 
-Below the desktop breakpoint, AmmarOS skips the desktop simulation and renders a fast, touch-friendly portfolio containing the same projects, skills, biography, résumé, and contact paths.
+Below the desktop breakpoint, AmmarOS enters a dedicated mobile boot manager instead of shrinking the desktop interface.
+
+#### Mobile boot manager
+
+- Volume Up and Volume Down move through boot targets
+- The simulated Power button confirms the highlighted target
+- Keyboard volume and arrow keys work for testing and accessibility
+- Android, iOS, and Recovery/static modes are available
+
+#### Android
+
+- Material You home screen and dedicated wallpaper
+- At a Glance date and Islamabad workspace status
+- Native profile and featured-project widgets
+- Searchable app drawer
+- Notification shade and quick settings
+- Focus Zone, noise shielding, builder network, and resilience controls
+- Android Back, Home, and Recents navigation
+
+#### iOS
+
+- Dedicated iOS wallpaper, status bar, and Dynamic Island
+- Home Screen widgets and native app grid
+- Translucent iOS Dock
+- Spotlight-style application search
+- Control Center with connectivity, focus, sound, brightness, and resilience
+- Native Files, Developer, Preview, Mail, Profile, and Terminal applications
+
+Both platforms include lock screens, swipe/touch unlocking, full-screen native applications, projects, skills, résumé preview, contact flow, social links, and a functional mobile terminal.
 
 ---
 
@@ -235,6 +294,17 @@ The selected operating system is intentionally **not** persisted—the GRUB deci
   </tr>
 </table>
 
+<table>
+  <tr>
+    <td><img src="./public/screenshots/android-app-drawer.webp" alt="Android app drawer" /></td>
+    <td><img src="./public/screenshots/ios-control-center.webp" alt="iOS Control Center" /></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Android app drawer</strong></td>
+    <td align="center"><strong>iOS Control Center</strong></td>
+  </tr>
+</table>
+
 ---
 
 ## Local development
@@ -285,8 +355,13 @@ src/
 │   ├── DesktopShell.tsx      # Windows/macOS shells and system controls
 │   ├── DesktopShortcuts.tsx  # Dragging, persistence and marquee selection
 │   ├── IDEWorkbench.tsx      # VS Code-inspired portfolio application
-│   ├── MobilePortfolio.tsx   # Mobile-specific experience
-│   └── NativeDesktopApps.tsx # Finder/Explorer, Terminal, Mail and more
+│   ├── MobilePortfolio.tsx   # Recovery/static mobile experience
+│   ├── NativeDesktopApps.tsx # Finder/Explorer, Terminal, Mail and more
+│   └── mobile/
+│       ├── MobileExperience.tsx # Mobile boot manager, loading and lock screens
+│       ├── AndroidShell.tsx     # Material You home, drawer and notification shade
+│       ├── IOSShell.tsx         # iOS Home Screen, Spotlight and Control Center
+│       └── MobileAppContent.tsx # Shared native mobile applications
 ├── data/
 │   ├── nativeApps.ts         # Native application registry
 │   └── portfolio.ts          # Projects and portfolio file tree
@@ -300,7 +375,10 @@ public/
 ├── ammar-avatar.png
 ├── resume-preview.png
 ├── wallpaper.webp
-└── wallpaper-macos.webp
+├── wallpaper-macos.webp
+└── mobile/
+    ├── android-wallpaper.webp
+    └── ios-wallpaper.webp
 ```
 
 ---
