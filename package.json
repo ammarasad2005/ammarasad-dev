@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "clean:legacy": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "predev": "npm run clean:legacy",
     "dev": "next dev",
+    "prebuild": "npm run clean:legacy",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
