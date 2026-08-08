@@ -2,10 +2,10 @@
 
 import NextImage from 'next/image'
 import { useRef, useState, type FormEvent } from 'react'
-import { ArrowLeft, ArrowUpRight, Check, ChevronLeft, Copy, Download, ExternalLink, Github, Linkedin, Mail, MapPin, MoreHorizontal, Send, TerminalSquare } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, BookOpen, Building2, Check, ChevronLeft, Copy, Download, ExternalLink, Github, GraduationCap, Linkedin, Mail, MapPin, MoreHorizontal, Send, Star, TerminalSquare, Users } from 'lucide-react'
 import { projects } from '../../data/portfolio'
 
-export type MobileAppId = 'profile' | 'projects' | 'skills' | 'resume' | 'contact' | 'terminal'
+export type MobileAppId = 'profile' | 'projects' | 'skills' | 'resume' | 'contact' | 'terminal' | 'github' | 'linkedin'
 export type MobileOS = 'android' | 'ios'
 
 const appTitles: Record<MobileAppId, { android: string; ios: string }> = {
@@ -15,6 +15,8 @@ const appTitles: Record<MobileAppId, { android: string; ios: string }> = {
   resume: { android: 'Resume', ios: 'Preview' },
   contact: { android: 'Contact', ios: 'Mail' },
   terminal: { android: 'Terminal', ios: 'Terminal' },
+  github: { android: 'GitHub', ios: 'GitHub' },
+  linkedin: { android: 'LinkedIn', ios: 'LinkedIn' },
 }
 
 type MobileAppContentProps = {
@@ -34,6 +36,8 @@ export function MobileAppContent({ app, os, onBack, onOpenApp }: MobileAppConten
       {app === 'resume' && <ResumeApp />}
       {app === 'contact' && <ContactApp os={os} />}
       {app === 'terminal' && <TerminalApp os={os} onOpenApp={onOpenApp} />}
+      {app === 'github' && <GitHubApp />}
+      {app === 'linkedin' && <LinkedInApp />}
     </div>
     <div className="mobile-home-indicator" onClick={onBack} aria-hidden="true"><i /></div>
   </section>
@@ -73,6 +77,14 @@ function ContactApp({ os }: { os: MobileOS }) {
   function send(event: FormEvent) { event.preventDefault(); window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}` }
   async function copy() { await navigator.clipboard?.writeText(email); setCopied(true); window.setTimeout(() => setCopied(false), 1400) }
   return <div className="mobile-contact-app"><header><span><NextImage src="/ammar-avatar.png" width={100} height={100} alt="Ammar account avatar" /></span><div><small>{os === 'ios' ? 'NEW MESSAGE TO' : 'CONTACT'}</small><h1>Muhammad Ammar</h1><p>{email}</p></div></header><form onSubmit={send}><label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} /></label><textarea value={message} onChange={(event) => setMessage(event.target.value)} /><button type="submit"><Send /> Send with email app</button></form><button className="mobile-copy-email" onClick={copy}>{copied ? <Check /> : <Copy />}{copied ? 'Address copied' : 'Copy email address'}</button><div className="mobile-social-links"><a href="https://github.com/ammarasad2005" target="_blank" rel="noreferrer"><Github /> GitHub <ArrowUpRight /></a><a href="https://www.linkedin.com/in/muhammad-ammar-asad/" target="_blank" rel="noreferrer"><Linkedin /> LinkedIn <ArrowUpRight /></a><a href={`mailto:${email}`}><Mail /> Email <ArrowUpRight /></a></div></div>
+}
+
+function GitHubApp() {
+  return <div className="mobile-github-app"><header><span><NextImage src="/ammar-avatar.png" width={120} height={120} alt="Ammar developer avatar" /></span><div><h1>Muhammad Ammar Asad</h1><p>@ammarasad2005</p><small>Full-stack developer · Islamabad</small></div></header><p className="mobile-social-bio">Building practical products with Next.js, React, Node.js, PostgreSQL, MongoDB and browser extension APIs.</p><div className="mobile-github-stats"><span><strong>04</strong> featured repos</span><span><strong>12+</strong> campus tools</span><span><strong>2027</strong> graduating</span></div><a className="mobile-social-primary" href="https://github.com/ammarasad2005" target="_blank" rel="noreferrer"><Github /> View GitHub profile <ArrowUpRight /></a><section><h2><BookOpen /> Featured repositories</h2>{projects.map((project) => <a key={project.id} href={project.githubUrl} target="_blank" rel="noreferrer"><div><strong>{project.title}</strong><p>{project.description}</p><span>{project.tags.slice(0, 3).join(' · ')}</span></div><small><Star /> {project.metric}</small></a>)}</section></div>
+}
+
+function LinkedInApp() {
+  return <div className="mobile-linkedin-app"><div className="mobile-linkedin-cover" /><header><span><NextImage src="/ammar-avatar.png" width={140} height={140} alt="Ammar professional avatar" /></span><h1>Muhammad Ammar Asad</h1><p>Full-Stack Web Developer · CS @ FAST-NUCES</p><small><MapPin /> Islamabad, Pakistan</small><i>OPEN TO WORK</i></header><div className="mobile-linkedin-actions"><a href="https://www.linkedin.com/in/muhammad-ammar-asad/" target="_blank" rel="noreferrer"><Linkedin /> Open LinkedIn</a><a href="mailto:ammarasad321993@gmail.com"><Mail /> Message</a></div><section><h2>About</h2><p>Sixth-semester Computer Science student specializing in end-to-end web applications, authenticated APIs, serverless backends, databases, and third-party integrations.</p></section><section className="mobile-linkedin-list"><h2>Background</h2><div><GraduationCap /><span><strong>FAST-NUCES Islamabad</strong><small>B.S. Computer Science · 2023–2027</small></span></div><div><Building2 /><span><strong>Full-stack product engineering</strong><small>Next.js · Node.js · TypeScript</small></span></div><div><Users /><span><strong>Open to internships</strong><small>On-site and remote opportunities</small></span></div></section></div>
 }
 
 function TerminalApp({ os, onOpenApp }: { os: MobileOS; onOpenApp: (app: MobileAppId) => void }) {

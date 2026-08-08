@@ -222,11 +222,15 @@ Below the desktop breakpoint, AmmarOS enters a dedicated mobile boot manager ins
 #### iOS
 
 - Dedicated iOS wallpaper, status bar, and Dynamic Island
-- Home Screen widgets and native app grid
+- Context-aware Home Screen widgets and horizontally swiped pages
 - Translucent iOS Dock
 - Spotlight-style application search
-- Control Center with connectivity, focus, sound, brightness, and resilience
-- Native Files, Developer, Preview, Mail, Profile, and Terminal applications
+- Native top-right Control Center and top-left Notification Center swipe gestures
+- Bottom-edge Home gesture and horizontal page navigation
+- Draggable AssistiveTouch with Home, Control Center, Notifications, Device, Spotlight, Profile, Lock Screen, Screenshot, and Restart actions
+- Redesigned Control Center with connectivity, media, Focus, Screen Mirroring, brightness, volume, resilience, orientation lock, and utilities
+- Native Files, Developer, Preview, Mail, Profile, GitHub, and LinkedIn applications
+- Apple-style black boot screen and progress treatment
 
 Both platforms include lock screens, swipe/touch unlocking, full-screen native applications, projects, skills, résumé preview, contact flow, social links, and a functional mobile terminal.
 
@@ -291,6 +295,17 @@ The selected operating system is intentionally **not** persisted—the GRUB deci
   <tr>
     <td align="center"><strong>Launchpad</strong></td>
     <td align="center"><strong>Finder</strong></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="./public/screenshots/ios-assistive-touch.webp" alt="iOS AssistiveTouch menu" /></td>
+    <td><img src="./public/screenshots/ios-github-app.webp" alt="Native iOS GitHub application" /></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>AssistiveTouch</strong></td>
+    <td align="center"><strong>GitHub application</strong></td>
   </tr>
 </table>
 
