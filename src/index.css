@@ -28,23 +28,33 @@ button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-vis
 .skip-link:focus { top: 12px; }
 
 /* Bootloader */
-.boot-screen { position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden; background: #030406; color: #d2d7df; font: 14px/1.5 var(--mono); }
-.boot-screen::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.65) 100%); }
-.boot-noise { position: absolute; inset: 0; opacity: .045; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E"); }
-.boot-console { position: relative; z-index: 1; width: min(760px, calc(100vw - 48px)); }
-.boot-brand { margin-bottom: 26px; text-align: center; color: #fff; font-weight: 700; letter-spacing: .02em; }
-.boot-brand span { margin-left: 7px; color: #a8b0be; font-weight: 400; }
-.boot-frame { border: 2px solid #828b9a; padding: 20px 22px 16px; box-shadow: inset 0 0 0 2px #181b21, 0 18px 80px #000; }
-.boot-frame > p { margin: 0 0 16px; color: #969eaa; text-align: center; font-size: 12px; }
-.boot-options { display: grid; gap: 4px; }
-.boot-option { width: 100%; padding: 9px 12px; border: 0; color: #c3c9d2; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); }
-.boot-option small { color: #666f7d; }
-.boot-option.selected { color: #05070a; background: #dce3ec; }
-.boot-option.selected small { color: #39404a; }
-.boot-hint { display: flex; justify-content: space-between; margin-top: 22px; color: #747d8a; font-size: 11px; }
-.boot-progress { height: 2px; margin-top: 9px; background: #1b1e24; }
-.boot-progress i { display: block; height: 100%; background: #afb8c5; transition: width .05s linear; }
-.boot-footer { margin: 13px 0 0; color: #505761; text-align: center; font-size: 10px; }
+.boot-screen { position:fixed; inset:0; display:grid; place-items:center; overflow:hidden; color:#ddd9e1; background:radial-gradient(ellipse at 50% 45%,#170b18 0%,#080508 62%,#020202 100%); font:13px/1.45 var(--mono); }
+.boot-screen::after { content:""; position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 3px),radial-gradient(circle at center,transparent 36%,rgba(0,0,0,.72) 100%); }
+.boot-noise { position:absolute; inset:0; opacity:.035; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E"); }
+.boot-firmware { position:absolute; z-index:2; top:15px; left:18px; right:18px; display:flex; justify-content:space-between; color:#504a53; font:8px var(--mono); letter-spacing:.06em; text-transform:uppercase; }
+.boot-console { position:relative; z-index:3; width:min(850px,calc(100vw - 52px)); }
+.boot-brand { margin-bottom:15px; text-align:center; color:#f5f3f6; font-weight:700; letter-spacing:.015em; text-shadow:0 0 8px rgba(255,255,255,.12); }
+.boot-brand span { margin-left:7px; color:#b5afb9; font-weight:400; }
+.boot-frame,.grub-edit-screen,.grub-command-screen { min-height:410px; border:2px solid #aaa3ae; padding:19px 21px 14px; background:rgba(5,3,6,.24); box-shadow:inset 0 0 0 1px #242026,0 20px 90px rgba(0,0,0,.7); }
+.boot-instructions { margin:0 0 17px; color:#aaa4ae; text-align:center; font-size:10px; }
+.boot-options { display:grid; gap:2px; }
+.boot-option { width:100%; min-height:29px; display:flex; align-items:center; justify-content:space-between; padding:4px 9px; border:0; color:#d2ced5; background:transparent; text-align:left; font:12px var(--mono); cursor:default; }
+.boot-option kbd { color:#514c54; font:8px var(--mono); }
+.boot-option.selected { color:#110d12; background:#e8e5ea; box-shadow:0 0 0 1px #fff; }
+.boot-option.selected kbd { color:#5d5760; }
+.boot-entry-info { display:grid; grid-template-columns:auto 1fr; gap:3px 10px; margin-top:18px; padding:12px 13px; border-top:1px solid #3a353d; border-bottom:1px solid #3a353d; background:rgba(255,255,255,.018); }
+.boot-entry-info > span { color:#716a75; font-size:8px; text-transform:uppercase; }
+.boot-entry-info > strong { color:#bbb5bf; font-size:9px; font-weight:500; }
+.boot-entry-info > p { grid-column:1/-1; margin:5px 0 3px; color:#807986; font-size:9px; }
+.boot-entry-info > code { grid-column:1/-1; color:#5c916d; font:8px var(--mono); }
+.boot-countdown { display:flex; justify-content:space-between; margin-top:13px; color:#827b86; font-size:8px; }
+.boot-progress { height:2px; margin-top:8px; background:#211e23; }
+.boot-progress i { display:block; height:100%; background:#aaa4ae; transition:width .05s linear; }
+.boot-keymap { display:flex; justify-content:center; gap:18px; min-height:18px; margin-top:11px; color:#6c6670; font-size:8px; }
+.boot-keymap span { display:flex; align-items:center; gap:5px; }.boot-keymap kbd { min-width:18px; padding:1px 4px; border:1px solid #454047; color:#9a949d; text-align:center; font:8px var(--mono); }
+.boot-footer { margin:5px 0 0; color:#454047; text-align:center; font-size:8px; }
+.grub-edit-screen > p { margin:0 0 12px; color:#bbb5bf; }.grub-edit-screen textarea { width:100%; height:340px; resize:none; padding:11px; border:1px solid #3d3840; outline:0; color:#c6d5c8; background:#040405; font:11px/1.65 var(--mono); caret-color:#e8e5ea; }.grub-edit-screen footer { display:flex; justify-content:space-between; margin-top:9px; color:#77717b; font-size:8px; }
+.grub-command-screen { display:grid; grid-template-rows:minmax(0,1fr) auto auto; color:#c7c2ca; background:#020203; }.grub-command-screen > div { min-height:0; overflow-y:auto; }.grub-command-screen p { margin:0; font:11px/1.55 var(--mono); }.grub-command-screen form { display:flex; gap:8px; margin-top:7px; }.grub-command-screen form span { color:#e5e0e8; }.grub-command-screen input { flex:1; border:0; outline:0; color:#e2dee4; background:transparent; font:11px var(--mono); caret-color:#fff; }.grub-command-screen footer { margin-top:11px; color:#69636d; font-size:8px; }
 
 /* Loading */
 .loading-screen { position: fixed; inset: 0; display: grid; place-content: center; justify-items: center; gap: 42px; background: radial-gradient(circle at 50% 40%, #0b1427, #03050a 56%); }
