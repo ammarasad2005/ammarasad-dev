@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import NextImage from 'next/image'
 import type { BootChoice, DesktopPlatform } from '../types'
 
 const options: { id: BootChoice; label: string; detail: string }[] = [
@@ -92,9 +93,9 @@ export function BootSequence({ onChoose, reducedMotion }: BootSequenceProps) {
 export function LoadingScreen({ reducedMotion, platform }: { reducedMotion: boolean; platform: DesktopPlatform }) {
   return (
     <div className={`loading-screen loading-${platform}`} role="status" aria-live="polite">
-      <div className="os-mark" aria-hidden="true"><i /><i /><i /><i /></div>
-      <div className={reducedMotion ? 'loading-dots still' : 'loading-dots'} aria-label="Starting AmmarOS"><i /><i /><i /><i /><i /></div>
-      <p>{platform === 'macos' ? 'starting macOS workspace' : 'starting Windows workspace'}</p>
+      {platform === 'macos' ? <div className="mac-login-account"><span className="mac-login-avatar"><NextImage src="/ammar-avatar.png" width={160} height={160} priority alt="Abstract developer profile avatar for Muhammad Ammar Asad" /><i /></span><strong>Muhammad Ammar Asad</strong><small>Developer Account · AmmarOS</small></div> : <div className="os-mark" aria-hidden="true"><i /><i /><i /><i /></div>}
+      {platform === 'macos' ? <div className={`mac-login-progress ${reducedMotion ? 'still' : ''}`} aria-label="Signing in to AmmarOS"><i /></div> : <div className={reducedMotion ? 'loading-dots still' : 'loading-dots'} aria-label="Starting AmmarOS"><i /><i /><i /><i /><i /></div>}
+      <p className={platform === 'macos' ? 'mac-login-message' : ''}>{platform === 'macos' ? 'Signing in…' : 'starting Windows workspace'}</p>
       <button className="skip-link visible-skip" onClick={() => window.dispatchEvent(new Event('alexos:skip'))}>Skip intro</button>
     </div>
   )
