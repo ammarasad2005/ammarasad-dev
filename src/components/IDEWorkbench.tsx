@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Braces, ChevronDown, ChevronRight, CircleUserRound, Code2, Command, Files, GitBranch, PanelBottom, Search, Settings, Sparkles, X } from 'lucide-react'
 import { fileById, portfolioFiles } from '../data/portfolio'
+import type { DesktopPlatform } from '../types'
 import { ContentRenderer } from './ContentRenderer'
 
 const groups = [
@@ -22,9 +23,10 @@ type IDEWorkbenchProps = {
   onRestart: () => void
   onMinimize: () => void
   reducedMotion: boolean
+  platform: DesktopPlatform
 }
 
-export function IDEWorkbench({ initialFile = 'readme', onRestart, onMinimize, reducedMotion }: IDEWorkbenchProps) {
+export function IDEWorkbench({ initialFile = 'readme', onRestart, onMinimize, reducedMotion, platform }: IDEWorkbenchProps) {
   const [openTabs, setOpenTabs] = useState<string[]>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('alexos:tabs') ?? '[]') as string[]
@@ -126,12 +128,13 @@ export function IDEWorkbench({ initialFile = 'readme', onRestart, onMinimize, re
   }
 
   return (
-    <div className={`ide-workbench theme-${theme}`} aria-label="Portfolio code editor">
+    <div className={`ide-workbench theme-${theme} ide-platform-${platform}`} aria-label="Portfolio code editor">
       <div className="ide-titlebar">
+        {platform === 'macos' && <div className="title-actions mac-ide-controls"><button aria-label="Close portfolio window" onClick={onMinimize}>×</button><button aria-label="Minimize window" onClick={onMinimize}>−</button><span aria-hidden="true">+</span></div>}
         <div className="window-mark"><Code2 size={17} /><span>MA</span></div>
         <nav aria-label="Application menu"><button onClick={() => setPaletteOpen(true)}>File</button><button onClick={() => setPaletteOpen(true)}>Edit</button><button onClick={() => setSidebarOpen((value) => !value)}>View</button><button onClick={() => setTerminalOpen((value) => !value)}>Terminal</button><button onClick={() => showTerminalMessage('Tip: press Ctrl/Cmd+P to open any portfolio file.')}>Help</button></nav>
         <button className="title-command" onClick={() => setPaletteOpen(true)}><Search size={13} /><span>{fileById[activeFile]?.path ?? 'portfolio'}</span><kbd>⌘P</kbd></button>
-        <div className="title-actions"><button aria-label="Minimize window" onClick={onMinimize}>—</button><span aria-hidden="true">□</span><button aria-label="Close portfolio window" onClick={onMinimize}>×</button></div>
+        {platform === 'windows' && <div className="title-actions"><button aria-label="Minimize window" onClick={onMinimize}>—</button><span aria-hidden="true">□</span><button aria-label="Close portfolio window" onClick={onMinimize}>×</button></div>}
       </div>
 
       <div className="ide-main">

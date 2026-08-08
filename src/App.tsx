@@ -4,13 +4,14 @@ import { ArrowLeft, Code2 } from 'lucide-react'
 import { BootSequence, LoadingScreen } from './components/BootSequence'
 import { DesktopShell } from './components/DesktopShell'
 import { MobilePortfolio } from './components/MobilePortfolio'
-import type { AppPhase, BootChoice } from './types'
+import type { AppPhase, BootChoice, DesktopPlatform } from './types'
 
 function App() {
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 760px)').matches)
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [phase, setPhase] = useState<AppPhase>('boot')
   const [requestedFile, setRequestedFile] = useState('readme')
+  const [platform, setPlatform] = useState<DesktopPlatform>('windows')
   const hasAutoOpened = useRef(false)
 
   useEffect(() => {
@@ -46,7 +47,10 @@ function App() {
   function handleBootChoice(choice: BootChoice) {
     if (choice === 'safe') setPhase('safe')
     else if (choice === 'easter') setPhase('easter')
-    else setPhase('loading')
+    else {
+      setPlatform(choice)
+      setPhase('loading')
+    }
   }
 
   function openIDE(file = 'readme') {
@@ -67,8 +71,8 @@ function App() {
       <a className="skip-link" href="#portfolio-content">Skip to portfolio</a>
       <AnimatePresence mode="wait">
         {phase === 'boot' && <motion.div key="boot" className="phase-layer" exit={{ opacity: 0 }}><BootSequence onChoose={handleBootChoice} reducedMotion={reducedMotion} /></motion.div>}
-        {phase === 'loading' && <motion.div key="loading" className="phase-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><LoadingScreen reducedMotion={reducedMotion} /></motion.div>}
-        {(phase === 'desktop' || phase === 'ide') && <motion.div id="portfolio-content" key="desktop" className="phase-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><DesktopShell ideOpen={phase === 'ide'} initialFile={requestedFile} onOpen={openIDE} onMinimize={() => setPhase('desktop')} onRestart={restart} reducedMotion={reducedMotion} /></motion.div>}
+        {phase === 'loading' && <motion.div key="loading" className="phase-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><LoadingScreen reducedMotion={reducedMotion} platform={platform} /></motion.div>}
+        {(phase === 'desktop' || phase === 'ide') && <motion.div id="portfolio-content" key={`desktop-${platform}`} className="phase-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><DesktopShell platform={platform} ideOpen={phase === 'ide'} initialFile={requestedFile} onOpen={openIDE} onMinimize={() => setPhase('desktop')} onRestart={restart} reducedMotion={reducedMotion} /></motion.div>}
         {phase === 'safe' && <motion.div id="portfolio-content" key="safe" className="phase-layer safe-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><MobilePortfolio safeMode canLaunchFull onLaunchFull={() => { hasAutoOpened.current = false; setPhase('desktop') }} /></motion.div>}
         {phase === 'easter' && <motion.div key="easter" className="phase-layer diagnostic-screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="diagnostic-card"><Code2 /><span>AMMAROS MEMORY DIAGNOSTIC</span><h1>All ideas accounted for.</h1><div className="memory-map">{Array.from({ length: 64 }).map((_, index) => <i key={index} style={{ animationDelay: `${index * 20}ms` }} />)}</div><p>65536K tested · 0 errors · builder mode enabled</p><button onClick={() => setPhase('boot')}><ArrowLeft size={16} /> Return to boot menu</button></div>
