@@ -11,4 +11,4 @@ export type DesktopPlatform = 'windows' | 'macos'
 
 export type BootChoice = DesktopPlatform | 'safe' | 'easter'
 
-export type AppPhase = 'boot' | 'loading' | 'desktop' | 'ide' | 'safe' | 'easter'
+export type AppPhase = 'boot' | 'loading' | 'win-signin' | 'mac-signin' | 'desktop' | 'ide' | 'safe' | 'easter'

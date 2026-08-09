@@ -7,14 +7,10 @@ type AccountAvatarProps = {
   size: number
 }
 
-export function AccountAvatar({ platform, className, size }: AccountAvatarProps) {
-  if (platform === 'macos') {
-    return (
-      <span className={`${className} account-avatar-image`} aria-label="Muhammad Ammar Asad account">
-        <NextImage src="/ammar-avatar.png" width={size} height={size} alt="Abstract developer profile avatar for Muhammad Ammar Asad" />
-      </span>
-    )
-  }
-
-  return <span className={className}>MA<i /></span>
+export function AccountAvatar({ className, size }: AccountAvatarProps) {
+  return (
+    <span className={`${className} account-avatar-image`} aria-label="Muhammad Ammar Asad account">
+      <NextImage src="/ammar-avatar.png" width={size} height={size} alt="Photograph of Muhammad Ammar Asad" />
+    </span>
+  )
 }
