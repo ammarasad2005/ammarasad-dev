@@ -146,7 +146,7 @@ function AppStatusBar({ os, now, resilience, focusLabel, online }: { os: MobileO
 
 function ProfileApp({ onOpenApp }: { onOpenApp: (app: MobileAppId) => void }) {
   return <div className="mobile-profile-app">
-    <div className="mobile-profile-hero"><span><NextImage src="/ammar-avatar.png" width={180} height={180} alt="Abstract developer account avatar" /></span><div><small>FULL-STACK DEVELOPER</small><h1>Muhammad<br />Ammar Asad</h1><p><MapPin /> Islamabad, Pakistan</p></div></div>
+    <div className="mobile-profile-hero"><span><NextImage src="/ammar-avatar.png" width={180} height={180} alt="Photograph of Muhammad Ammar Asad" /></span><div><small>FULL-STACK DEVELOPER</small><h1>Muhammad<br />Ammar Asad</h1><p><MapPin /> Islamabad, Pakistan</p></div></div>
     <p className="mobile-profile-intro">Computer Science student at FAST-NUCES building useful end-to-end products with TypeScript, React, Next.js, Node.js, and modern databases.</p>
     <div className="mobile-profile-stats"><div><strong>04</strong><span>deployed projects</span></div><div><strong>12+</strong><span>campus tools</span></div><div><strong>06</strong><span>semester</span></div></div>
     <section className="mobile-profile-now"><span>NOW</span><h2>Open to full-stack internships</h2><p>Looking for a team where I can contribute to production software, learn deeply, and keep shipping.</p><button onClick={() => onOpenApp('contact')}>Start a conversation <ArrowUpRight /></button></section>
