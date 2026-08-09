@@ -203,12 +203,38 @@ export function BootSequence({ onChoose, reducedMotion }: BootSequenceProps) {
 }
 
 export function LoadingScreen({ reducedMotion, platform }: { reducedMotion: boolean; platform: DesktopPlatform }) {
+  if (platform === 'macos') {
+    return (
+      <div className="loading-screen apple-boot" role="status" aria-live="polite">
+        <svg className="apple-boot-logo" viewBox="0 0 384 512" aria-label="Apple logo" role="img">
+          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 270.6q0 39.4 14.9 84.4c11.5 37.4 51.3 114.8 94.6 114.8 22.4 0 40.9-18.1 76.8-18.1s49.7 18.1 76.8 18.1c43.4 0 84.5-96.8 94.6-114.8 11.7-35.2 16.9-73.1 16.9-86.9zM261.1 105c17.5-22.5 29.7-53.7 26.5-85.2-25.4 1.1-55.3 16.9-73.3 39.3-15.8 19.3-28.4 50.9-24.9 80.4 27.1 2.1 54.9-11.3 71.7-34.5z" />
+        </svg>
+        <div className="apple-boot-bar" aria-hidden="true"><i className={reducedMotion ? 'still' : ''} /></div>
+        <p>Starting AmmarOS</p>
+        <button className="skip-link visible-skip" onClick={() => window.dispatchEvent(new Event('alexos:skip'))}>Skip intro</button>
+      </div>
+    )
+  }
   return (
-    <div className={`loading-screen loading-${platform}`} role="status" aria-live="polite">
-      {platform === 'macos' ? <div className="mac-login-account"><span className="mac-login-avatar"><NextImage src="/ammar-avatar.png" width={160} height={160} priority alt="Photograph of Muhammad Ammar Asad" /><i /></span><strong>Muhammad Ammar Asad</strong><small>Developer Account · AmmarOS</small></div> : <div className="os-mark" aria-hidden="true"><i /><i /><i /><i /></div>}
-      {platform === 'macos' ? <div className={`mac-login-progress ${reducedMotion ? 'still' : ''}`} aria-label="Signing in to AmmarOS"><i /></div> : <div className={reducedMotion ? 'loading-dots still' : 'loading-dots'} aria-label="Starting AmmarOS"><i /><i /><i /><i /><i /></div>}
-      <p className={platform === 'macos' ? 'mac-login-message' : ''}>{platform === 'macos' ? 'Signing in…' : 'starting Windows workspace'}</p>
+    <div className="loading-screen loading-windows" role="status" aria-live="polite">
+      <div className="os-mark" aria-hidden="true"><i /><i /><i /><i /></div>
+      <div className={reducedMotion ? 'loading-dots still' : 'loading-dots'} aria-label="Starting AmmarOS"><i /><i /><i /><i /><i /></div>
+      <p>starting Windows workspace</p>
       <button className="skip-link visible-skip" onClick={() => window.dispatchEvent(new Event('alexos:skip'))}>Skip intro</button>
+    </div>
+  )
+}
+
+export function MacSignIn({ reducedMotion, onSignIn }: { reducedMotion: boolean; onSignIn: () => void }) {
+  return (
+    <div className="loading-screen loading-macos" role="dialog" aria-label="Sign in to AmmarOS">
+      <div className="mac-login-account">
+        <span className="mac-login-avatar"><NextImage src="/ammar-avatar.png" width={160} height={160} priority alt="Photograph of Muhammad Ammar Asad" /><i /></span>
+        <strong>Muhammad Ammar Asad</strong>
+        <small>Developer Account · AmmarOS</small>
+        <button className="mac-signin-button" onClick={onSignIn}>{reducedMotion ? 'Open account' : 'Sign in'}</button>
+      </div>
+      <button className="skip-link visible-skip" onClick={onSignIn}>Skip intro</button>
     </div>
   )
 }
