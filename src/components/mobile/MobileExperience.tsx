@@ -2,7 +2,7 @@
 
 import NextImage from 'next/image'
 import { useEffect, useRef, useState, type MutableRefObject } from 'react'
-import { BatteryCharging, Bot, ChevronDown, ChevronUp, CirclePower, Cpu, ShieldCheck, Smartphone, Volume2, Wifi } from 'lucide-react'
+import { Apple, BatteryCharging, Bot, ChevronDown, ChevronUp, CirclePower, Cpu, ShieldCheck, Smartphone, Volume2, Wifi } from 'lucide-react'
 import { MobilePortfolio } from '../MobilePortfolio'
 import { AndroidShell } from './AndroidShell'
 import { IOSShell } from './IOSShell'
@@ -55,7 +55,7 @@ export function MobileExperience({ reducedMotion }: MobileExperienceProps) {
   if (stage === 'bootloader') return <MobileBootloader selected={selected} setSelected={setSelected} onBoot={() => boot(bootOptions[selected].id)} />
   if (stage === 'loading') return <MobileLoading os={os} reducedMotion={reducedMotion} />
   if (stage === 'lock') return <MobileLockScreen os={os} now={now} onUnlock={unlock} onRestart={restart} touchStartRef={touchStart} />
-  return os === 'android' ? <AndroidShell onRestart={restart} /> : <IOSShell onRestart={restart} />
+  return os === 'android' ? <AndroidShell onRestart={restart} /> : <IOSShell onRestart={restart} onLock={() => setStage('lock')} />
 }
 
 function MobileBootloader({ selected, setSelected, onBoot }: { selected: number; setSelected: (index: number) => void; onBoot: () => void }) {
@@ -63,7 +63,7 @@ function MobileBootloader({ selected, setSelected, onBoot }: { selected: number;
     <div className="mobile-boot-scanlines" />
     <header><div><Cpu /><span><strong>AMMAR MOBILE BOOT MANAGER</strong><small>MBM 1.4.2 · aarch64</small></span></div><span>DEVICE STATE: <b>UNLOCKED</b></span></header>
     <section className="mobile-device-info"><div className="mobile-boot-symbol"><Smartphone /><i /></div><dl><div><dt>PRODUCT</dt><dd>AmmarPhone Developer Edition</dd></div><div><dt>BOOT SLOT</dt><dd>portfolio_a · verified</dd></div><div><dt>BATTERY</dt><dd>92% · mental resilience nominal</dd></div><div><dt>SERIAL</dt><dd>AMMAR-FAST-2027</dd></div></dl></section>
-    <section className="mobile-boot-options"><span>BOOT TARGET</span>{bootOptions.map((option, index) => <button className={selected === index ? 'selected' : ''} key={option.id} onClick={() => setSelected(index)}><i>{index === 0 ? <Bot /> : index === 1 ? <Smartphone /> : <ShieldCheck />}</i><span><strong>{option.label}</strong><small>{option.detail}</small></span>{selected === index && <b>›</b>}</button>)}</section>
+    <section className="mobile-boot-options"><span>BOOT TARGET</span>{bootOptions.map((option, index) => <button className={selected === index ? 'selected' : ''} key={option.id} onClick={() => setSelected(index)}><i>{index === 0 ? <Bot /> : index === 1 ? <Apple /> : <ShieldCheck />}</i><span><strong>{option.label}</strong><small>{option.detail}</small></span>{selected === index && <b>›</b>}</button>)}</section>
     <footer><div><Volume2 /><span>VOLUME UP / DOWN<small>move highlight</small></span></div><div><CirclePower /><span>POWER BUTTON<small>confirm selection</small></span></div></footer>
     <div className="mobile-hardware-buttons" aria-label="Simulated hardware buttons"><button onClick={() => setSelected((selected - 1 + bootOptions.length) % bootOptions.length)} aria-label="Volume up"><ChevronUp /></button><button onClick={() => setSelected((selected + 1) % bootOptions.length)} aria-label="Volume down"><ChevronDown /></button><button onClick={onBoot} aria-label="Power button select"><CirclePower /></button></div>
     <button className="mobile-boot-start" onClick={onBoot}>POWER TO SELECT</button>
@@ -71,7 +71,8 @@ function MobileBootloader({ selected, setSelected, onBoot }: { selected: number;
 }
 
 function MobileLoading({ os, reducedMotion }: { os: MobileOS; reducedMotion: boolean }) {
-  return <main className={`mobile-os-loading mobile-os-loading-${os}`}><NextImage className="mobile-os-loading-bg" src={os === 'android' ? '/mobile/android-wallpaper.webp' : '/mobile/ios-wallpaper.webp'} fill priority sizes="100vw" alt="" /><div className="mobile-loading-mark">{os === 'android' ? <Bot /> : <span><NextImage src="/ammar-avatar.png" width={120} height={120} alt="Ammar account" /></span>}</div><strong>{os === 'android' ? 'AmmarOS Android' : 'AmmarOS iOS'}</strong><small>{os === 'android' ? 'Optimizing the developer workspace…' : 'Preparing your Home Screen…'}</small><div className={`mobile-loading-progress ${reducedMotion ? 'still' : ''}`}><i /></div></main>
+  if (os === 'ios') return <main className="mobile-ios-boot"><Apple /><div className={`mobile-ios-boot-progress ${reducedMotion ? 'still' : ''}`}><i /></div></main>
+  return <main className="mobile-os-loading mobile-os-loading-android"><NextImage className="mobile-os-loading-bg" src="/mobile/android-wallpaper.webp" fill priority sizes="100vw" alt="" /><div className="mobile-loading-mark"><Bot /></div><strong>AmmarOS Android</strong><small>Optimizing the developer workspace…</small><div className={`mobile-loading-progress ${reducedMotion ? 'still' : ''}`}><i /></div></main>
 }
 
 type LockProps = { os: MobileOS; now: Date; onUnlock: () => void; onRestart: () => void; touchStartRef: MutableRefObject<number | null> }
