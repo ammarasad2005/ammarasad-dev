@@ -32,7 +32,7 @@ function App() {
 
   useEffect(() => {
     if (phase !== 'loading') return
-    const timer = window.setTimeout(() => setPhase(platform === 'windows' ? 'win-signin' : 'mac-signin'), reducedMotion ? 350 : 1300)
+    const timer = window.setTimeout(() => setPhase(platform === 'windows' ? 'win-signin' : 'mac-signin'), reducedMotion ? 350 : (platform === 'macos' ? 1600 : 1300))
     const skip = () => setPhase('desktop')
     window.addEventListener('alexos:skip', skip)
     return () => { window.clearTimeout(timer); window.removeEventListener('alexos:skip', skip) }
