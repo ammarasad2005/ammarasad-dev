@@ -202,6 +202,8 @@ The IDE is the most detailed content layer:
 
 Below the desktop breakpoint, AmmarOS enters a dedicated mobile boot manager instead of shrinking the desktop interface.
 
+Both shells share one set of system services—the clock, Build/Learn/Debug focus sessions, the "now building" media session, and pointer-driven sliders—but each renders them in its own platform language. The vocabulary the desktop already uses carries across: the network is the **Builder Network**, Bluetooth pairs with **AmmarBook**, and the battery reads **mental resilience**.
+
 #### Mobile boot manager
 
 - Volume Up and Volume Down move through boot targets
@@ -217,7 +219,10 @@ Below the desktop breakpoint, AmmarOS enters a dedicated mobile boot manager ins
 - Profile, project activity, social dashboard, GitHub, LinkedIn, availability, and progress widgets
 - Searchable native app drawer without desktop-only applications
 - Swipe-down notification shade with interactive Internet, Bluetooth, Focus, Do Not Disturb, flashlight, auto-rotate, brightness, and resilience controls
-- Material You media player and grouped portfolio notifications
+- Draggable brightness slider that genuinely dims the screen
+- Build, Learn, and Debug focus modes with a live session timer surfaced in the status bar and At a Glance
+- Material You media player with working previous, play, and next transport across the shipped projects
+- Dev-language switcher and grouped portfolio notifications
 - Functional Clear All notification behavior
 - Modern Android gesture navigation instead of permanent three-button controls
 - Bottom swipe for Home, app drawer, and Recents; left-edge swipe for Back; horizontal Home-page swipes
@@ -234,10 +239,21 @@ Below the desktop breakpoint, AmmarOS enters a dedicated mobile boot manager ins
 - Bottom-edge Home gesture and horizontal page navigation
 - Draggable AssistiveTouch with Home, Control Center, Notifications, Device, Spotlight, Profile, Lock Screen, Screenshot, and Restart actions
 - Redesigned Control Center with connectivity, media, Focus, Screen Mirroring, brightness, volume, resilience, orientation lock, and utilities
+- Draggable brightness and volume sliders, a Night Shift control, and a deployment switch
+- Build, Learn, and Debug focus modes reflected in the Control Center and the Dynamic Island live activity
+- Spotlight search that actually filters, with an empty state
 - Native Files, Developer, Preview, Mail, Profile, GitHub, and LinkedIn applications
 - Apple-style black boot screen and progress treatment
 
-Both platforms include lock screens, swipe/touch unlocking, full-screen native applications, projects, skills, résumé preview, contact flow, social links, and a functional mobile terminal.
+Both platforms include lock screens, swipe/touch unlocking, full-screen native applications, projects, skills, résumé preview, contact flow, and social links.
+
+#### Inside a mobile application
+
+Every mobile application carries its own platform status bar and app bar. The overflow control opens an Android overflow menu or an iOS action sheet, which is the route to **Open Terminal** alongside copying the email address, downloading the résumé, and opening the GitHub or LinkedIn profile.
+
+The mobile terminal accepts `about`, `projects`, `skills`, `resume`, `contact`, `github`, `linkedin`, `email`, `whoami`, `ls`, `neofetch`, `help`, and `clear`.
+
+The system Back gesture pops the application's internal stack first—a project detail returns to the project list—before leaving for the Home Screen.
 
 ---
 
@@ -392,7 +408,9 @@ src/
 │       ├── MobileExperience.tsx # Mobile boot manager, loading and lock screens
 │       ├── AndroidShell.tsx     # Material You home, drawer and notification shade
 │       ├── IOSShell.tsx         # iOS Home Screen, Spotlight and Control Center
-│       └── MobileAppContent.tsx # Shared native mobile applications
+│       ├── MobileAppContent.tsx # Shared native mobile applications
+│       ├── MobileMarks.tsx      # Resolution-independent Android robot mark
+│       └── mobileSystem.ts      # Clock, focus sessions, media session and sliders
 ├── data/
 │   ├── nativeApps.ts         # Native application registry
 │   └── portfolio.ts          # Projects and portfolio file tree
