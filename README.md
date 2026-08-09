@@ -211,13 +211,18 @@ Below the desktop breakpoint, AmmarOS enters a dedicated mobile boot manager ins
 
 #### Android
 
-- Material You home screen and dedicated wallpaper
-- At a Glance date and Islamabad workspace status
-- Native profile and featured-project widgets
-- Searchable app drawer
-- Notification shade and quick settings
-- Focus Zone, noise shielding, builder network, and resilience controls
-- Android Back, Home, and Recents navigation
+- Android-style black boot screen, Android robot mark, boot dots, and powered-by-Android treatment
+- Pixel-inspired lock screen with stacked clock, At a Glance status, notification, and fingerprint unlock
+- Material You wallpaper, contextual widgets, and two horizontally swiped Home pages
+- Profile, project activity, social dashboard, GitHub, LinkedIn, availability, and progress widgets
+- Searchable native app drawer without desktop-only applications
+- Swipe-down notification shade with interactive Internet, Bluetooth, Focus, Do Not Disturb, flashlight, auto-rotate, brightness, and resilience controls
+- Material You media player and grouped portfolio notifications
+- Functional Clear All notification behavior
+- Modern Android gesture navigation instead of permanent three-button controls
+- Bottom swipe for Home, app drawer, and Recents; left-edge swipe for Back; horizontal Home-page swipes
+- Native Recents carousel with project, GitHub, and contact task cards
+- Native About, Projects, Skills, Resume, Contact, GitHub, and LinkedIn applications
 
 #### iOS
 
@@ -295,6 +300,17 @@ The selected operating system is intentionally **not** persisted—the GRUB deci
   <tr>
     <td align="center"><strong>Launchpad</strong></td>
     <td align="center"><strong>Finder</strong></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="./public/screenshots/android-notification-shade.webp" alt="Android Material You notification shade" /></td>
+    <td><img src="./public/screenshots/android-recents.webp" alt="Android Recents application carousel" /></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Android notification shade</strong></td>
+    <td align="center"><strong>Android Recents</strong></td>
   </tr>
 </table>
 
