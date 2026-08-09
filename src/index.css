@@ -217,7 +217,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-vis
 .win-signin-button:hover { filter:brightness(1.1); }
 /* macOS authentic boot: Apple logo + progress bar on black */
 .apple-boot { background:#000; gap:28px; }
-.apple-boot-logo { width:50px; height:62px; color:#f5f5f7; }
+.apple-boot-logo { width:50px; height:62px; color:#f5f5f7; fill:#f5f5f7; }
 .apple-boot-bar { width:160px; height:4px; border-radius:3px; background:rgba(255,255,255,.2); overflow:hidden; }
 .apple-boot-bar i { display:block; height:100%; background:#f5f5f7; animation:appleBoot 1.15s cubic-bezier(.3,.8,.3,1) forwards; }
 .apple-boot-bar i.still { animation:none; width:100%; }

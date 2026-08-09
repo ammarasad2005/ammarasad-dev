@@ -206,7 +206,7 @@ export function LoadingScreen({ reducedMotion, platform }: { reducedMotion: bool
   if (platform === 'macos') {
     return (
       <div className="loading-screen apple-boot" role="status" aria-live="polite">
-        <svg className="apple-boot-logo" viewBox="0 0 384 512" aria-label="Apple logo" role="img">
+        <svg className="apple-boot-logo" viewBox="0 0 384 512" fill="currentColor" aria-label="Apple logo" role="img">
           <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 270.6q0 39.4 14.9 84.4c11.5 37.4 51.3 114.8 94.6 114.8 22.4 0 40.9-18.1 76.8-18.1s49.7 18.1 76.8 18.1c43.4 0 84.5-96.8 94.6-114.8 11.7-35.2 16.9-73.1 16.9-86.9zM261.1 105c17.5-22.5 29.7-53.7 26.5-85.2-25.4 1.1-55.3 16.9-73.3 39.3-15.8 19.3-28.4 50.9-24.9 80.4 27.1 2.1 54.9-11.3 71.7-34.5z" />
         </svg>
         <div className="apple-boot-bar" aria-hidden="true"><i className={reducedMotion ? 'still' : ''} /></div>
