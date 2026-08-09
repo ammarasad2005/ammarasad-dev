@@ -205,10 +205,24 @@ export function BootSequence({ onChoose, reducedMotion }: BootSequenceProps) {
 export function LoadingScreen({ reducedMotion, platform }: { reducedMotion: boolean; platform: DesktopPlatform }) {
   return (
     <div className={`loading-screen loading-${platform}`} role="status" aria-live="polite">
-      {platform === 'macos' ? <div className="mac-login-account"><span className="mac-login-avatar"><NextImage src="/ammar-avatar.png" width={160} height={160} priority alt="Photograph of Muhammad Ammar Asad" /><i /></span><strong>Muhammad Ammar Asad</strong><small>Developer Account · AmmarOS</small></div> : <div className="win-login-account"><span className="win-login-avatar"><NextImage src="/ammar-avatar.png" width={160} height={160} priority alt="Photograph of Muhammad Ammar Asad" /><i /></span><strong>Muhammad Ammar Asad</strong><small>Developer Account · AmmarOS</small></div>}
+      {platform === 'macos' ? <div className="mac-login-account"><span className="mac-login-avatar"><NextImage src="/ammar-avatar.png" width={160} height={160} priority alt="Photograph of Muhammad Ammar Asad" /><i /></span><strong>Muhammad Ammar Asad</strong><small>Developer Account · AmmarOS</small></div> : <div className="os-mark" aria-hidden="true"><i /><i /><i /><i /></div>}
       {platform === 'macos' ? <div className={`mac-login-progress ${reducedMotion ? 'still' : ''}`} aria-label="Signing in to AmmarOS"><i /></div> : <div className={reducedMotion ? 'loading-dots still' : 'loading-dots'} aria-label="Starting AmmarOS"><i /><i /><i /><i /><i /></div>}
       <p className={platform === 'macos' ? 'mac-login-message' : ''}>{platform === 'macos' ? 'Signing in…' : 'starting Windows workspace'}</p>
       <button className="skip-link visible-skip" onClick={() => window.dispatchEvent(new Event('alexos:skip'))}>Skip intro</button>
+    </div>
+  )
+}
+
+export function WindowsSignIn({ reducedMotion, onSignIn }: { reducedMotion: boolean; onSignIn: () => void }) {
+  return (
+    <div className="loading-screen" role="dialog" aria-label="Sign in to AmmarOS">
+      <div className="win-login-account">
+        <span className="win-login-avatar"><NextImage src="/ammar-avatar.png" width={160} height={160} priority alt="Photograph of Muhammad Ammar Asad" /><i /></span>
+        <strong>Muhammad Ammar Asad</strong>
+        <small>Developer Account · AmmarOS</small>
+        <button className="win-signin-button" onClick={onSignIn}>{reducedMotion ? 'Open account' : 'Sign in'}</button>
+      </div>
+      <button className="skip-link visible-skip" onClick={onSignIn}>Skip intro</button>
     </div>
   )
 }
