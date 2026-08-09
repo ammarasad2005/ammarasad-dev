@@ -6,6 +6,7 @@ import { ArrowLeft, Code2 } from 'lucide-react'
 import { BootSequence, LoadingScreen } from './components/BootSequence'
 import { DesktopShell } from './components/DesktopShell'
 import { MobilePortfolio } from './components/MobilePortfolio'
+import { MobileExperience } from './components/mobile/MobileExperience'
 import type { AppPhase, BootChoice, DesktopPlatform } from './types'
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
     setPhase('boot')
   }
 
-  if (isMobile) return <MobilePortfolio />
+  if (isMobile) return <MobileExperience reducedMotion={reducedMotion} />
 
   return (
     <div className="app-root">
